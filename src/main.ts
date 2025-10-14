@@ -15,11 +15,11 @@ async function main(): Promise<void> {
         people.forEach(person => {
             person.celebrateBirthday()
         })
-        console.log('All birthdays celebrated! 🎉\n')
+        console.log('All birthdays celebrated!\n')
         
         // Print each person's greet() and isAdult() status
         console.log('People information:')
-        console.log('='.repeat(50))
+        console.log('='.repeat(50)) // Separator line
         people.forEach((person, index) => {
             console.log(`${index + 1}. ${person.greet()}`)
             console.log(`   Adult status: ${person.isAdult() ? 'Adult' : 'Minor'}`)
@@ -29,17 +29,17 @@ async function main(): Promise<void> {
         // Save the updated list to people.output.json
         console.log('Saving updated people list...')
         await repository.savePeople(people)
-        
-        console.log('\n✅ Process completed successfully!')
-        
+
+        console.log('\nProcess completed successfully!')
+
     } catch (error) {
-        console.error('❌ Error occurred:', error instanceof Error ? error.message : 'Unknown error')
+        console.error('Error occurred:', error instanceof Error ? error.message : 'Unknown error')
         process.exit(1)
     }
 }
 
 // Run the main function
 main().catch(error => {
-    console.error('❌ Fatal error:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('Fatal error:', error instanceof Error ? error.message : 'Unknown error')
     process.exit(1)
 })
