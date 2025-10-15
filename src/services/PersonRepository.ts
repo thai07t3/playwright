@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import Person from './Person.ts'
+import Person from '../models/Person.ts'
 
 export class PersonRepository {
     private dataDir: string
