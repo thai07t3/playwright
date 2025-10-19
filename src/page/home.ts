@@ -21,11 +21,11 @@ export class HomePage {
         await this.closeButton.click({ timeout: 5000 });
     }
 
-    async navigateToLogin() {
+    async goToLogin() {
         await this.loginLink.click();
     }
 
-    async navigateToCart() {
+    async goToCart() {
         await this.cartLink.scrollIntoViewIfNeeded();
         await this.cartLink.click();
     }

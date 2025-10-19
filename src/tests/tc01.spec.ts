@@ -1,9 +1,11 @@
-import { test, expect } from '../fixtures/test-context.ts';
+import { test } from '../fixtures/test-context.ts';
 
 test.describe('E-commerce Test Cases', () => {
-  test.beforeEach(async ({ page, loginPage }) => {
+  test.beforeEach(async ({ page, homePage, loginPage }) => {
     // Navigate to the application URL
     await page.goto(process.env.URL || 'https://demo.testarchitect.com/');
+    await homePage.closePopupIfPresent();
+    await homePage.goToLogin();
 
     // Perform login before each test
     await loginPage.login(
@@ -19,13 +21,10 @@ test.describe('E-commerce Test Cases', () => {
 
   test('TC01: Single Item Purchase Flow', {
     tag: ["@smoke"]
-  }, async ({ page, homePage, productPage, cartPage }) => {
-    // Navigate to Shop page
-    await homePage.goToShop();
+  }, async ({ homePage, productPage, cartPage }) => {
 
-    // Steps 3-7: Navigate to department and verify views
     await homePage.selectDepartment("Electronic Components & Supplies");
-    await page.waitForLoadState('networkidle');
+    // await page.waitForLoadState('networkidle');
 
     // Verify views switching
     await productPage.switchToGridView();
@@ -46,8 +45,6 @@ test.describe('E-commerce Test Cases', () => {
 
     // Display final summary
     await cartPage.verifyCartSummary();
-
-    console.log('✓ TC01: Single Item Purchase Flow completed successfully');
   });
 
   // test('TC02: Multiple Items Purchase Flow', {

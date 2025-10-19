@@ -50,7 +50,7 @@ export class CartPage extends HomePage {
     }
 
     async verifyCartContents(expectedProducts: any[]) {
-        await this.navigateToCart();
+        await this.goToCart();
         await this.shouldCartPageDisplayed();
 
         for (const product of expectedProducts) {
@@ -59,7 +59,7 @@ export class CartPage extends HomePage {
     }
 
     async clearCart() {
-        await this.navigateToCart();
+        await this.goToCart();
         const removeButtons = this.page.getByText("Remove");
         const buttonCount = await removeButtons.count();
 
