@@ -1,25 +1,70 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { Product } from "../models/product.ts";
+import { HomePage } from "./home.ts";
 
-export class ProductPage {
-    readonly page: Page;
+export class ProductPage extends HomePage {
     readonly gridViewLink: Locator;
     readonly listViewLink: Locator;
     readonly items: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.items = this.page.locator('div.content-product');
         this.gridViewLink = this.page.locator('.switch-grid');
         this.listViewLink = this.page.locator('.switch-list');
     }
 
-    async selectRandomItem(): Promise<Product> {
-        const randomIndex = Math.floor(Math.random() * await this.items.count());
-        const itemInfo = await this.items.nth(randomIndex).innerText();
+    async addRandomItemToCart(): Promise<Product | null> {
+        const itemCount = await this.items.count();
+        if (itemCount === 0) {
+            console.log('No items available to add to cart');
+            return null;
+        }
+
+        const random = Math.floor(Math.random() * itemCount);
+        const itemInfo = await this.items.nth(random).innerText();
         const product = this.parseProductInfo(itemInfo);
-        await this.items.nth(randomIndex).click();
+
+        // Click add to cart button
+        await this.items.nth(random).getByText(/Add to cart/).last().click();
+
+        // Wait for cart update
+        await this.page.waitForTimeout(500);
+
         return product;
+    }
+
+    async addSpecificItemToCart(index: number): Promise<Product | null> {
+        const itemCount = await this.items.count();
+        if (index >= itemCount || index < 0) {
+            console.log(`Invalid item index: ${index}. Available items: ${itemCount}`);
+            return null;
+        }
+
+        const itemInfo = await this.items.nth(index).innerText();
+        const product = this.parseProductInfo(itemInfo);
+
+        // Click add to cart button
+        await this.items.nth(index).getByText(/Add to cart/).last().click();
+
+        // Wait for cart update
+        await this.page.waitForTimeout(500);
+
+        return product;
+    }
+
+    async getAvailableItemsCount(): Promise<number> {
+        return await this.items.count();
+    }
+
+    async getProductInfoByIndex(index: number): Promise<Product | null> {
+        const itemCount = await this.items.count();
+        if (index >= itemCount || index < 0) {
+            return null;
+        }
+
+        const itemInfo = await this.items.nth(index).innerText();
+        return this.parseProductInfo(itemInfo);
     }
 
     private parseProductInfo(text: string): Product {
@@ -82,9 +127,11 @@ export class ProductPage {
 
     async shouldBeInGridView() {
         await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
+        //TODO: Verify that the product items are displayed in a grid layout
     }
 
     async shouldBeInListView() {
         await expect.soft(this.listViewLink).toHaveClass(/switcher-active/);
+        //TODO: Verify that the product items are displayed in a list layout
     }
 }
