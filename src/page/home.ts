@@ -29,7 +29,7 @@ export class HomePage {
 
     async selectDepartment(departmentName: string) {
         await this.allDepartmentsLabel.hover();
-        const departmentLink = this.page.getByRole('link', { name: departmentName });
+        const departmentLink = this.page.locator("item-link") && this.page.getByRole('link', { name: departmentName });
         await departmentLink.click();
     }
 }

@@ -9,8 +9,8 @@ export class ProductPage {
     constructor(page: Page) {
         this.page = page;
         this.items = this.page.locator('div.content-product');
-        this.gridViewLink = this.page.getByRole('link', { name: ' Grid' });
-        this.listViewLink = this.page.getByRole('link', { name: ' List' });
+        this.gridViewLink = this.page.locator('.switch-grid');
+        this.listViewLink = this.page.locator('.switch-list');
     }
 
     async selectItem() {
