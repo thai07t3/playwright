@@ -13,13 +13,21 @@ export class LoginPage extends HomePage {
         this.loginButton = this.page.getByRole('button', { name: 'Log in' });
     }
 
-    async login(username: string, password: string, clear: boolean = true) {
-        if (clear) {
-            await this.usernameInput.fill('');
-            await this.passwordInput.fill('');
-        }
+    async fillUsername(username: string) {
         await this.usernameInput.fill(username);
+    }
+
+    async fillPassword(password: string) {
         await this.passwordInput.fill(password);
+    }
+
+    async login(username: string, password: string, clear: boolean = false) {
+        if (clear) {
+            await this.fillUsername('');
+            await this.fillPassword('');
+        }
+        await this.fillUsername(username);
+        await this.fillPassword(password);
         await this.loginButton.click();
     }
 }

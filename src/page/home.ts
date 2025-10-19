@@ -16,7 +16,7 @@ export class HomePage {
     }
 
     async closePopupIfPresent() {
-        await this.closeButton.click( { timeout: 5000 } );
+        await this.closeButton.click({ timeout: 5000 });
     }
 
     async navigateToLogin() {
@@ -29,7 +29,9 @@ export class HomePage {
 
     async selectDepartment(departmentName: string) {
         await this.allDepartmentsLabel.hover();
-        const departmentLink = this.page.locator("item-link") && this.page.getByRole('link', { name: departmentName });
+        const departmentLink = this.page.locator('.item-link')
+            .filter({ hasText: departmentName })
+            .first();
         await departmentLink.click();
     }
 }

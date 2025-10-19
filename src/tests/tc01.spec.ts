@@ -13,12 +13,15 @@ test('test', async ({ page }) => {
   const username = process.env.USERNAME || 'username';
   const password = process.env.PASSWORD || 'password';
   
-  await page.goto('https://demo.testarchitect.com/');
+  await page.goto(process.env.URL || 'https://demo.testarchitect.com/');
   await homePage.closePopupIfPresent();
   await homePage.navigateToLogin();
   await loginPage.login(username, password);
   await accountPage.selectDepartment("Electronic Components & Supplies");
-  await productPage.switchToListView();
-  await productPage.switchToGridView();
+  await productPage.shouldBeInGridView();
+  await productPage.switchViewTo('list');
+  await productPage.shouldBeInListView();
+  const selectedProduct = await productPage.selectRandomItem();
+  console.log('Selected Product Info:', selectedProduct);
   console.log('Test completed successfully.');
 });
