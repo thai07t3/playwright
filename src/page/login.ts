@@ -1,13 +1,13 @@
 import type { Locator, Page } from "@playwright/test";
+import { HomePage } from "./home.ts";
 
-export class LoginPage {
-    readonly page: Page;
+export class LoginPage extends HomePage {
     readonly usernameInput: Locator;
     readonly passwordInput: Locator;
     readonly loginButton: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.usernameInput = this.page.getByRole('textbox', { name: 'Username or email address' });
         this.passwordInput = this.page.getByRole('textbox', { name: 'Password' });
         this.loginButton = this.page.getByRole('button', { name: 'Log in' });
