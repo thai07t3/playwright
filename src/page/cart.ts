@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
-import { CartTable } from "../table/CartTable.ts";
+import { CartTable } from "../table/cartTable.ts";
 import type { Product } from "../models/Product.ts";
 
 export class CartPage extends HomePage {
@@ -30,14 +30,6 @@ export class CartPage extends HomePage {
             await this.shouldProductInCart(product);
         }
     }
-
-    // async getCartSummary(): Promise<CartItem[]> {
-    //     return await this.cartTable.getAllCartItems();
-    // }
-
-    // async isCartEmpty() {
-    //     return await this.cartTable.isCartEmpty();
-    // }
 
     async getTotalValue() {
         return await this.totalPrice.textContent();

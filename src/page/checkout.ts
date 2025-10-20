@@ -106,45 +106,11 @@ export class CheckoutPage extends HomePage {
 
     async placeOrder() {
         await this.placeOrderButton.click();
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(2000);
     }
 
     async shouldShowOrderConfirmation() {
         await expect(this.orderConfirmationMessage).toBeVisible();
     }
-
-    // async verifyOrderConfirmation(): Promise<string> {
-    //     // Look for order confirmation elements
-    //     const confirmationSelectors = [
-    //         '.woocommerce-order-received',
-    //         '.order-confirmation',
-    //         'text="Thank you. Your order has been received."',
-    //         'text="Order received"',
-    //         '.woocommerce-notice--success'
-    //     ];
-
-    //     let confirmationMessage = '';
-    //     for (const selector of confirmationSelectors) {
-    //         try {
-    //             const element = this.page.locator(selector).first();
-    //             if (await element.isVisible({ timeout: 5000 })) {
-    //                 confirmationMessage = await element.textContent() || '';
-    //                 break;
-    //             }
-    //         } catch (error) {
-    //             // Continue to next selector
-    //         }
-    //     }
-
-    //     // If no specific confirmation found, look for any success message
-    //     if (!confirmationMessage) {
-    //         const successElement = this.page.locator('[class*="success"], [class*="confirmation"]').first();
-    //         if (await successElement.isVisible({ timeout: 5000 })) {
-    //             confirmationMessage = await successElement.textContent() || '';
-    //         }
-    //     }
-
-    //     expect(confirmationMessage).toBeTruthy();
-    //     return confirmationMessage;
-    // }
 }

@@ -14,21 +14,14 @@ export class ProductPage extends HomePage {
         this.listViewLink = this.page.locator('.switch-list');
     }
 
-    async addRandomItemToCart(): Promise<Product | null> {
+    async addRandomItemToCart(): Promise<Product> {
         const itemCount = await this.items.count();
-        if (itemCount === 0) {
-            console.log('No items available to add to cart');
-            return null;
-        }
-
         const random = Math.floor(Math.random() * itemCount);
         const itemInfo = await this.items.nth(random).innerText();
         const product = this.parseProductInfo(itemInfo);
 
         // Click add to cart button and wait for navigation
         await this.items.nth(random).getByText(/add to cart/i).last().click();
-        await this.page.waitForLoadState('networkidle');
-
         return product;
     }
 
@@ -68,22 +61,22 @@ export class ProductPage extends HomePage {
         return products;
     }
 
-    // async addSpecificItemToCart(index: number): Promise<Product | null> {
-    //     const itemCount = await this.items.count();
-    //     if (index >= itemCount || index < 0) {
-    //         console.log(`Invalid item index: ${index}. Available items: ${itemCount}`);
-    //         return null;
-    //     }
+    async addSpecificItemToCart(index: number): Promise<Product | null> {
+        const itemCount = await this.items.count();
+        if (index >= itemCount || index < 0) {
+            console.log(`Invalid item index: ${index}. Available items: ${itemCount}`);
+            return null;
+        }
 
-    //     const itemInfo = await this.items.nth(index).innerText();
-    //     const product = this.parseProductInfo(itemInfo);
+        const itemInfo = await this.items.nth(index).innerText();
+        const product = this.parseProductInfo(itemInfo);
 
-    //     // Click add to cart button and wait for navigation
-    //     await this.items.nth(index).getByText(/add to cart/i).last().click();
-    //     await this.page.waitForLoadState('networkidle');
+        // Click add to cart button and wait for navigation
+        await this.items.nth(index).getByText(/add to cart/i).last().click();
+        await this.page.waitForLoadState('networkidle');
 
-    //     return product;
-    // }
+        return product;
+    }
 
     async getAvailableItemsCount(): Promise<number> {
         return await this.items.count();
@@ -158,14 +151,14 @@ export class ProductPage extends HomePage {
     }
 
     async shouldBeInGridView() {
-        await this.page.waitForLoadState('domcontentloaded');
         await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
+        await this.page.waitForLoadState('networkidle');
         //TODO: Verify that the product items are displayed in a grid layout
     }
 
     async shouldBeInListView() {
-        await this.page.waitForLoadState('domcontentloaded');
         await expect.soft(this.listViewLink).toBeVisible();
+        await this.page.waitForLoadState('networkidle');
         //TODO: Verify that the product items are displayed in a list layout
     }
 }
