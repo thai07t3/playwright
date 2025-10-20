@@ -14,13 +14,11 @@ test.describe('E-commerce Test Cases', () => {
       process.env.USERNAME || 'thai.luu@agest.vn',
       process.env.PASSWORD || '6j4gX3sTVz4NmYQ'
     );
-
-    await cartPage.clearCart();
   });
 
-  // test.afterEach(async ({ cartPage }) => {
-  //   await cartPage.clearCart();
-  // });
+  test.afterEach(async ({ cartPage }) => {
+    await cartPage.clearCart();
+  });
 
   test('TC01: Single Item Purchase Flow', {
     tag: ["@smoke"]

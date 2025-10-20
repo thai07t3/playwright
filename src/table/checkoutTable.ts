@@ -18,9 +18,6 @@ export class CheckoutTable {
 
         await expect(productRow).toBeVisible();
 
-        // Verify the product name is present in the row
-        // await expect(productRow).toContainText(productName);
-
         // Format the price and verify it's present in the row
         const formattedPrice = `$${parseFloat(productPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         await expect(productRow).toContainText(formattedPrice);
