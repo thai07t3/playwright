@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { Product } from "../models/product.ts";
+import { Product } from "../models/Product.ts";
 import { HomePage } from "./home.ts";
 
 export class ProductPage extends HomePage {
@@ -30,6 +30,42 @@ export class ProductPage extends HomePage {
         await this.page.waitForLoadState('networkidle');
 
         return product;
+    }
+
+    async addMultipleRandomItemsToCart(count: number): Promise<Product[]> {
+        const products: Product[] = [];
+        const itemCount = await this.items.count();
+
+        if (itemCount === 0) {
+            console.log('No items available to add to cart');
+            return products;
+        }
+
+        // Create array of unique random indices
+        const selectedIndices = new Set<number>();
+        const maxItems = Math.min(count, itemCount);
+
+        while (selectedIndices.size < maxItems) {
+            const randomIndex = Math.floor(Math.random() * itemCount);
+            selectedIndices.add(randomIndex);
+        }
+
+        // Add each selected item to cart
+        for (const index of Array.from(selectedIndices)) {
+            const itemInfo = await this.items.nth(index).innerText();
+            const product = this.parseProductInfo(itemInfo);
+
+            // Click add to cart button and wait for navigation
+            await this.items.nth(index).getByText(/add to cart/i).last().click();
+            await this.page.waitForLoadState('networkidle');
+
+            products.push(product);
+
+            // Small delay between additions to prevent issues
+            await this.page.waitForTimeout(1000);
+        }
+
+        return products;
     }
 
     // async addSpecificItemToCart(index: number): Promise<Product | null> {
@@ -122,12 +158,13 @@ export class ProductPage extends HomePage {
     }
 
     async shouldBeInGridView() {
+        await this.page.waitForLoadState('domcontentloaded');
         await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
         //TODO: Verify that the product items are displayed in a grid layout
     }
 
     async shouldBeInListView() {
-        // Check if list view is active or just verify the switch was clicked
+        await this.page.waitForLoadState('domcontentloaded');
         await expect.soft(this.listViewLink).toBeVisible();
         //TODO: Verify that the product items are displayed in a list layout
     }

@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
 import { CartTable } from "../table/CartTable.ts";
-import type { Product } from "../models/product.ts";
+import type { Product } from "../models/Product.ts";
 
 export class CartPage extends HomePage {
     readonly cartTitle: Locator;
@@ -19,7 +19,6 @@ export class CartPage extends HomePage {
 
     async shouldCartPageDisplayed() {
         await expect(this.page).toHaveURL(/.*\/cart/);
-        await this.page.waitForLoadState('domcontentloaded');
     }
 
     async shouldProductInCart(product: Product) {
@@ -44,16 +43,15 @@ export class CartPage extends HomePage {
         return await this.totalPrice.textContent();
     }
 
-    async verifyCartContents(expectedProducts: Product[]) {
-        await this.goToCart();
+    async shouldCartContain(expectedProducts: Product[]) {
         await this.shouldCartPageDisplayed();
-
-        // Wait for any removal operations to complete
-        await this.page.waitForLoadState('networkidle');
-
         for (const product of expectedProducts) {
             await this.shouldProductInCart(product);
         }
+    }
+
+    async checkout() {
+        await this.checkoutButton.click();
     }
 
     async clearCart() {
@@ -68,5 +66,10 @@ export class CartPage extends HomePage {
                 await this.page.waitForLoadState('networkidle'); // Wait for network to be idle
             }
         }
+    }
+
+    async proceedToCheckout() {
+        await this.checkoutButton.click();
+        await this.page.waitForLoadState('domcontentloaded');
     }
 }

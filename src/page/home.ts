@@ -26,6 +26,7 @@ export class HomePage {
     async goToCart() {
         await this.cartLink.scrollIntoViewIfNeeded();
         await this.cartLink.click();
+        await this.page.waitForLoadState('domcontentloaded');
     }
 
     async selectDepartment(departmentName: string) {
