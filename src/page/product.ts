@@ -16,28 +16,28 @@ export class ProductPage extends HomePage {
         this.loadingCircle = this.page.locator('.et-loader svg').last();
     }
 
-    async addRandomItemToCart(): Promise<Product> {
-        const itemCount = await this.items.count();
-        const random = Math.floor(Math.random() * itemCount);
-        const itemInfo = await this.items.nth(random).innerText();
+    private async addItemToCartByIndex(index: number): Promise<Product> {
+        const itemInfo = await this.items.nth(index).innerText();
         const product = this.parseProductInfo(itemInfo);
 
-        await this.items.nth(random).getByText(/add to cart/i).last().click();
+        // Add to cart and wait for loading to complete
+        await this.items.nth(index).getByText(/add to cart/i).last().click();
         await this.loadingCircle.waitFor({ state: 'hidden' });
 
         return product;
     }
 
+    async addRandomItemToCart(): Promise<Product> {
+        const itemCount = await this.items.count();
+        const randomIndex = Math.floor(Math.random() * itemCount);
+        const product = await this.addItemToCartByIndex(randomIndex);
+        return product;
+    }
+
     async addMultipleRandomItemsToCart(count: number): Promise<Product[]> {
-        const products: Product[] = [];
         const itemCount = await this.items.count();
 
-        if (itemCount === 0) {
-            console.log('No items available to add to cart');
-            return products;
-        }
-
-        // Create array of unique random indices
+        // Generate array of unique random indices
         const selectedIndices = new Set<number>();
         const maxItems = Math.min(count, itemCount);
 
@@ -46,39 +46,18 @@ export class ProductPage extends HomePage {
             selectedIndices.add(randomIndex);
         }
 
-        // Add each selected item to cart
-        for (const index of Array.from(selectedIndices)) {
-            const itemInfo = await this.items.nth(index).innerText();
-            const product = this.parseProductInfo(itemInfo);
-
-            // Click add to cart button and wait for navigation
-            await this.items.nth(index).getByText(/add to cart/i).last().click();
-            await this.loadingCircle.waitFor({ state: 'hidden' });
-
+        // Add each selected item to cart using helper method
+        const products: Product[] = [];
+        for (const index of selectedIndices) {
+            const product = await this.addItemToCartByIndex(index);
             products.push(product);
-
-            // Small delay between additions to prevent issues
-            await this.page.waitForTimeout(1000);
         }
 
         return products;
     }
 
     async addSpecificItemToCart(index: number): Promise<Product | null> {
-        const itemCount = await this.items.count();
-        if (index >= itemCount || index < 0) {
-            console.log(`Invalid item index: ${index}. Available items: ${itemCount}`);
-            return null;
-        }
-
-        const itemInfo = await this.items.nth(index).innerText();
-        const product = this.parseProductInfo(itemInfo);
-
-        // Click add to cart button and wait for navigation
-        await this.items.nth(index).getByText(/add to cart/i).last().click();
-        await this.loadingCircle.waitFor({ state: 'hidden' });
-
-        return product;
+        return await this.addItemToCartByIndex(index);
     }
 
     async getAvailableItemsCount(): Promise<number> {

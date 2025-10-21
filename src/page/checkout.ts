@@ -111,7 +111,7 @@ export class CheckoutPage extends HomePage {
     }
 
     async shouldShowOrderConfirmation() {
-        await this.blockUI.waitFor({ state: 'hidden', timeout: 10000 });
+        await this.blockUI.waitFor({ state: 'detached', timeout: 10000 });
         await expect(this.orderConfirmationMessage).toBeVisible();
     }
 }
