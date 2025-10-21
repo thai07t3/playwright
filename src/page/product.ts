@@ -1,17 +1,19 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { Product } from "../models/Product.ts";
+import { Product } from "../models/product.ts";
 import { HomePage } from "./home.ts";
 
 export class ProductPage extends HomePage {
     readonly gridViewLink: Locator;
     readonly listViewLink: Locator;
     readonly items: Locator;
+    readonly loadingCircle: Locator;
 
     constructor(page: Page) {
         super(page);
         this.items = this.page.locator('div.content-product');
         this.gridViewLink = this.page.locator('.switch-grid');
         this.listViewLink = this.page.locator('.switch-list');
+        this.loadingCircle = this.page.locator('.et-loader svg').last();
     }
 
     async addRandomItemToCart(): Promise<Product> {
@@ -20,8 +22,9 @@ export class ProductPage extends HomePage {
         const itemInfo = await this.items.nth(random).innerText();
         const product = this.parseProductInfo(itemInfo);
 
-        // Click add to cart button and wait for navigation
         await this.items.nth(random).getByText(/add to cart/i).last().click();
+        await this.loadingCircle.waitFor({ state: 'hidden' });
+
         return product;
     }
 
@@ -50,7 +53,7 @@ export class ProductPage extends HomePage {
 
             // Click add to cart button and wait for navigation
             await this.items.nth(index).getByText(/add to cart/i).last().click();
-            await this.page.waitForLoadState('networkidle');
+            await this.loadingCircle.waitFor({ state: 'hidden' });
 
             products.push(product);
 
@@ -73,7 +76,7 @@ export class ProductPage extends HomePage {
 
         // Click add to cart button and wait for navigation
         await this.items.nth(index).getByText(/add to cart/i).last().click();
-        await this.page.waitForLoadState('networkidle');
+        await this.loadingCircle.waitFor({ state: 'hidden' });
 
         return product;
     }

@@ -1,5 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
+import type { User } from "../fixtures/test.context.ts";
 
 export class LoginPage extends HomePage {
     readonly usernameInput: Locator;
@@ -21,13 +22,13 @@ export class LoginPage extends HomePage {
         await this.passwordInput.fill(password);
     }
 
-    async login(username: string, password: string, clear: boolean = false) {
+    async login(user: User, clear: boolean = false) {
         if (clear) {
             await this.fillUsername('');
             await this.fillPassword('');
         }
-        await this.fillUsername(username);
-        await this.fillPassword(password);
+        await this.fillUsername(user.username);
+        await this.fillPassword(user.password);
         await this.loginButton.click();
     }
 }

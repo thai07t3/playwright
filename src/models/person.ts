@@ -10,7 +10,7 @@ class Person {
         if (age <= 0) {
             throw new Error('Age must be positive')
         }
-        
+
         this.name = name
         this.age = age
         this.city = city
@@ -62,13 +62,13 @@ class Person {
         if (!data || typeof data !== 'object') {
             throw new Error('Invalid data provided for Person.fromJSON')
         }
-        
+
         const { name, age, city } = data
-        
+
         if (typeof name !== 'string' || typeof age !== 'number' || typeof city !== 'string') {
             throw new Error('Invalid data types in JSON data')
         }
-        
+
         return new Person(name, age, city)
     }
 }

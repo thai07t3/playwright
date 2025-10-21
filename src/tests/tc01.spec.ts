@@ -1,60 +1,30 @@
-import { test } from '../fixtures/test-context.ts';
-import { CustomerRepository } from '../models/CustomerInfo.ts';
+import { test } from '../fixtures/test.context.ts';
+import { DEFAULT_TEST_DEPARTMENT } from '../constants/departments.ts';
 
 test.describe('E-commerce Test Cases', () => {
-  test.beforeEach(async ({ page, homePage, loginPage, cartPage }) => {
-    // Navigate to the application URL
-    await page.goto(process.env.URL || 'https://demo.testarchitect.com/');
-    await homePage.closePopupIfPresent();
-
-    await homePage.goToLogin();
-
-    // Perform login before each test
-    await loginPage.login(
-      process.env.USERNAME || 'thai.luu@agest.vn',
-      process.env.PASSWORD || '6j4gX3sTVz4NmYQ'
-    );
-  });
-
-  test.afterEach(async ({ cartPage }) => {
-    await cartPage.clearCart();
-  });
-
   test('TC01: Single Item Purchase Flow', {
     tag: ["@smoke"]
-  }, async ({ homePage, productPage, cartPage, checkoutPage }) => {
-    await homePage.selectDepartment("Electronic Components & Supplies");
-    await homePage.page.waitForLoadState('domcontentloaded');
-
-    // Verify views switching
-    // await productPage.shouldBeInGridView();
+  }, async ({ loginPage, productPage, cartPage, checkoutPage, customerInfo }) => {
+    // 2-7: Navigate to product category and verify views
+    await loginPage.selectDepartment(DEFAULT_TEST_DEPARTMENT);
+    await productPage.shouldBeInGridView();
     await productPage.switchToListView();
     await productPage.shouldBeInListView();
 
-    // Steps 8-9: Select item and add to cart
+    // 8-11: Add random item to cart and verify in cart
     const selectedProduct = await productPage.addRandomItemToCart();
-    await productPage.page.waitForLoadState('networkidle');
-    await productPage.page.waitForTimeout(2000);
     await productPage.goToCart();
+    await cartPage.shouldCartContain([selectedProduct]);
 
-    // Steps 10-11: Go to cart and verify item details
-    if (selectedProduct) {
-      await cartPage.shouldCartContain([selectedProduct]);
-    }
-
+    //12-14: Proceed to checkout and verify order
     await cartPage.checkout();
     await checkoutPage.shouldCheckoutPageDisplayed();
-    if (selectedProduct) {
-      await checkoutPage.shouldProductInCheckout(
-        selectedProduct.getName,
-        selectedProduct.getPrice.toString()
-      );
-    }
+    await checkoutPage.shouldProductInCheckout(
+      selectedProduct.getName,
+      selectedProduct.getPrice.toString()
+    );
 
-    // Load customer data using CustomerRepository
-    const customerInfo = CustomerRepository.loadCustomer();
-
-    // Fill in customer information
+    // 15-17: Fill in customer information and place order
     await checkoutPage.fillBillingInformation(customerInfo);
     await checkoutPage.placeOrder();
     await checkoutPage.shouldShowOrderConfirmation();

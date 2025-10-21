@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
-import { CustomerInfo } from "../models/CustomerInfo.ts";
+import { CustomerInfo } from "../models/customerInfo.ts";
 import { CheckoutTable } from "../table/checkoutTable.ts";
 
 export class CheckoutPage extends HomePage {
@@ -25,6 +25,7 @@ export class CheckoutPage extends HomePage {
     // Action buttons
     readonly placeOrderButton: Locator;
     readonly orderConfirmationMessage: Locator;
+    readonly blockUI: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -48,6 +49,7 @@ export class CheckoutPage extends HomePage {
 
         this.placeOrderButton = this.page.getByRole('button', { name: /place order|complete order/i });
         this.orderConfirmationMessage = this.page.getByText('Thank you. Your order has been received');
+        this.blockUI = this.page.locator('.blockOverlay');
     }
 
     async shouldCheckoutPageDisplayed() {
@@ -106,11 +108,10 @@ export class CheckoutPage extends HomePage {
 
     async placeOrder() {
         await this.placeOrderButton.click();
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForTimeout(2000);
     }
 
     async shouldShowOrderConfirmation() {
+        await this.blockUI.waitFor({ state: 'hidden', timeout: 10000 });
         await expect(this.orderConfirmationMessage).toBeVisible();
     }
 }

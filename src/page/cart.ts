@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
 import { CartTable } from "../table/cartTable.ts";
-import type { Product } from "../models/Product.ts";
+import type { Product } from "../models/product.ts";
 
 export class CartPage extends HomePage {
     readonly cartTitle: Locator;

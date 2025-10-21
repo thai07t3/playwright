@@ -1,4 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
+import type { AllDepartments } from "../type/all.deparments.ts";
 
 export class HomePage {
     readonly page: Page;
@@ -26,10 +27,9 @@ export class HomePage {
     async goToCart() {
         await this.cartLink.scrollIntoViewIfNeeded();
         await this.cartLink.click();
-        await this.page.waitForLoadState('domcontentloaded');
     }
 
-    async selectDepartment(departmentName: string) {
+    async selectDepartment(departmentName: AllDepartments) {
         await this.allDepartmentsLabel.hover();
         const departmentLink = this.page.locator('.item-link')
             .filter({ hasText: departmentName })

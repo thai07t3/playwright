@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import Person from '../models/Person.ts'
+import Person from '../models/person.ts'
 
 export class PersonRepository {
     private dataDir: string
@@ -11,7 +11,7 @@ export class PersonRepository {
 
     async loadPeople(): Promise<Person[]> {
         const filePath = path.join(this.dataDir, 'people.json')
-        
+
         try {
             // Check if file exists
             if (!fs.existsSync(filePath)) {
@@ -20,13 +20,13 @@ export class PersonRepository {
 
             // Read and parse the JSON file
             const fileContent = fs.readFileSync(filePath, 'utf8')
-            
+
             if (!fileContent.trim()) {
                 throw new Error('File is empty')
             }
 
             const data = JSON.parse(fileContent)
-            
+
             if (!Array.isArray(data)) {
                 throw new Error('JSON file must contain an array of people')
             }
@@ -50,7 +50,7 @@ export class PersonRepository {
 
     async savePeople(people: Person[], filename: string = 'people.output.json'): Promise<void> {
         const filePath = path.join(this.dataDir, filename)
-        
+
         try {
             // Ensure the data directory exists
             if (!fs.existsSync(this.dataDir)) {
@@ -59,11 +59,11 @@ export class PersonRepository {
 
             // Convert Person instances to JSON objects
             const jsonData = people.map(person => person.toJSON())
-            
+
             // Write to file with pretty formatting
             const jsonString = JSON.stringify(jsonData, null, 2)
             fs.writeFileSync(filePath, jsonString, 'utf8')
-            
+
             console.log(`Successfully saved ${people.length} people to ${filePath}`)
 
         } catch (error) {

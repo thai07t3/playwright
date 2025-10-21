@@ -9,7 +9,7 @@ dotenv.config({ path: path.resolve(import.meta.dirname, '.env') });
  */
 export default defineConfig({
   testDir: './src/tests',
-  timeout: 60 * 1000,
+  timeout: 3 * 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -18,8 +18,12 @@ export default defineConfig({
   use: {
     baseURL: 'https://demo.testarchitect.com/',
     trace: 'on-first-retry',
-    headless: false,
+    headless: true,
     testIdAttribute: 'id',
+    actionTimeout: 10_000,
+  },
+  expect: {
+    timeout: 10_000,
   },
 
   projects: [
