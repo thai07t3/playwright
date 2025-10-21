@@ -1,4 +1,4 @@
-import { PersonRepository } from './services/PersonRepository.ts'
+import { PersonRepository } from './services/person.repository.ts'
 
 async function main(): Promise<void> {
     const repository = new PersonRepository()
