@@ -52,7 +52,7 @@ export class CheckoutPage extends HomePage {
         this.blockUI = this.page.locator('.blockOverlay');
     }
 
-    async shouldCheckoutPageDisplayed() {
+    async shouldCheckoutPageDisplay() {
         await expect(this.billingLabel).toBeVisible();
         await expect(this.yourOrderTitle).toBeVisible();
     }
@@ -69,7 +69,6 @@ export class CheckoutPage extends HomePage {
 
         // Select country
         await this.countrySelect.selectOption(customerInfo.country);
-        await this.page.waitForLoadState('networkidle');
 
         // Fill address fields
         await this.addressField.fill(customerInfo.streetAddress);
@@ -84,13 +83,9 @@ export class CheckoutPage extends HomePage {
 
         await this.cityField.fill(customerInfo.city);
 
-        // Fill state if visible (only required for certain countries)
-        if (await this.stateField.isVisible()) {
-            // Handle Select2 dropdown by clicking and selecting option
-            await this.stateField.click();
-            await this.page.getByText(customerInfo.state, { exact: true }).last().click();
-            await this.page.waitForLoadState('networkidle');
-        }
+        // Handle Select2 dropdown by clicking and selecting option
+        await this.stateField.click();
+        await this.page.getByText(customerInfo.state, { exact: true }).last().click();
 
         // Fill contact information
         await this.phoneField.fill(customerInfo.phone);

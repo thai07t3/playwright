@@ -22,11 +22,7 @@ export class LoginPage extends HomePage {
         await this.passwordInput.fill(password);
     }
 
-    async login(user: User, clear: boolean = false) {
-        if (clear) {
-            await this.fillUsername('');
-            await this.fillPassword('');
-        }
+    async login(user: User) {
         await this.fillUsername(user.username);
         await this.fillPassword(user.password);
         await this.loginButton.click();

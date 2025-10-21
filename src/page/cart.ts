@@ -17,12 +17,12 @@ export class CartPage extends HomePage {
         this.checkoutButton = this.page.getByRole('link', { name: 'Proceed to checkout' });
     }
 
-    async shouldCartPageDisplayed() {
+    async shouldCartPageDisplay() {
         await expect(this.page).toHaveURL(/.*\/cart/);
     }
 
     async shouldProductInCart(product: Product) {
-        await this.cartTable.verifyProductInCart(product.getName, product.getPrice.toString());
+        await this.cartTable.verifyProductInCart(product.name, product.price.toString());
     }
 
     async shouldMultipleProductsInCart(products: Product[]) {
@@ -36,7 +36,7 @@ export class CartPage extends HomePage {
     }
 
     async shouldCartContain(expectedProducts: Product[]) {
-        await this.shouldCartPageDisplayed();
+        await this.shouldCartPageDisplay();
         for (const product of expectedProducts) {
             await this.shouldProductInCart(product);
         }
@@ -53,10 +53,9 @@ export class CartPage extends HomePage {
 
         for (let i = 0; i < buttonCount; i++) {
             const button = removeButtons.first(); // Always get first as DOM updates after removal
-            if (await button.isVisible()) {
-                await button.click();
-                await this.page.waitForLoadState('networkidle'); // Wait for network to be idle
-            }
+            // await button.waitFor({ state: 'visible' });
+            await button.click();
+            await this.page.waitForLoadState('networkidle'); // Wait for network to be idle
         }
     }
 

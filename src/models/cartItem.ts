@@ -3,6 +3,6 @@ export interface CartItem {
     price: string;
     quantity: number;
     subtotal: string;
-    thumbnail: string | undefined;
-    removeLink: string | undefined;
+    thumbnail?: string;
+    removeLink?: string;
 }

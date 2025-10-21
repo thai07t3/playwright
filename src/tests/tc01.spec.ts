@@ -1,12 +1,12 @@
 import { test } from '../fixtures/test.context.ts';
-import { DEFAULT_TEST_DEPARTMENT } from '../constants/departments.ts';
+import { AllDepartments } from '../type/all.deparments.ts';
 
 test.describe('E-commerce Test Cases', () => {
   test('TC01: Single Item Purchase Flow', {
     tag: ["@smoke"]
   }, async ({ loginPage, productPage, cartPage, checkoutPage, customerInfo }) => {
     // 2-7: Navigate to product category and verify views
-    await loginPage.selectDepartment(DEFAULT_TEST_DEPARTMENT);
+    await loginPage.selectDepartment(AllDepartments.Electronic_Components_Supplies);
     await productPage.shouldBeInGridView();
     await productPage.switchToListView();
     await productPage.shouldBeInListView();
@@ -18,10 +18,10 @@ test.describe('E-commerce Test Cases', () => {
 
     //12-14: Proceed to checkout and verify order
     await cartPage.checkout();
-    await checkoutPage.shouldCheckoutPageDisplayed();
+    await checkoutPage.shouldCheckoutPageDisplay();
     await checkoutPage.shouldProductInCheckout(
-      selectedProduct.getName,
-      selectedProduct.getPrice.toString()
+      selectedProduct.name,
+      selectedProduct.price.toString()
     );
 
     // 15-17: Fill in customer information and place order

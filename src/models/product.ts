@@ -1,35 +1,35 @@
 export class Product {
-    private type: string;
-    private name: string;
-    private rating: number;
-    private totalRatings: number;
-    private price: number;
+    private _type: string;
+    private _name: string;
+    private _rating: number;
+    private _totalRatings: number;
+    private _price: number;
 
     constructor(type: string, name: string, rating: number, totalRatings: number, price: number) {
-        this.type = type;
-        this.name = name;
-        this.rating = rating;
-        this.totalRatings = totalRatings;
-        this.price = price;
+        this._type = type;
+        this._name = name;
+        this._rating = rating;
+        this._totalRatings = totalRatings;
+        this._price = price;
     }
 
-    get getType(): string {
-        return this.type;
+    get type(): string {
+        return this._type;
     }
 
-    get getName(): string {
-        return this.name;
+    get name(): string {
+        return this._name;
     }
 
-    get getRating(): number {
-        return this.rating;
+    get rating(): number {
+        return this._rating;
     }
 
-    get getTotalRatings(): number {
-        return this.totalRatings;
+    get totalRatings(): number {
+        return this._totalRatings;
     }
 
-    get getPrice(): number {
-        return this.price;
+    get price(): number {
+        return this._price;
     }
 }

@@ -33,7 +33,7 @@ export class CustomerInfo {
     constructor(data: CustomerData) {
         this.firstName = data.firstName;
         this.lastName = data.lastName;
-        if (data.companyName !== undefined) {
+        if (data.companyName) {
             this.companyName = data.companyName;
         }
         this.country = data.country;
@@ -44,7 +44,7 @@ export class CustomerInfo {
         this.state = data.state;
         this.phone = data.phone;
         this.email = data.email;
-        if (data.orderNotes !== undefined) {
+        if (data.orderNotes) {
             this.orderNotes = data.orderNotes;
         }
     }
