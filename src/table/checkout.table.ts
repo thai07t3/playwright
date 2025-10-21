@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { getFormattedPrice } from "../utils/helper.ts";
 
 export class CheckoutTable {
     readonly page: Page;
@@ -18,8 +19,7 @@ export class CheckoutTable {
 
         await expect(productRow).toBeVisible();
 
-        // Format the price and verify it's present in the row
-        const formattedPrice = `$${parseFloat(productPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const formattedPrice = getFormattedPrice(productPrice);
         await expect(productRow).toContainText(formattedPrice);
     }
 }

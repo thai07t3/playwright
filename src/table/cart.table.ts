@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { getFormattedPrice } from "../utils/helper.ts";
 
 export class CartTable {
     readonly page: Page;
@@ -18,8 +19,7 @@ export class CartTable {
             has: this.page.locator('td.product-details').getByRole('link', { name: productName })
         }).first();
         await expect(item).toBeVisible();
-        // Convert expected price to match cart format (e.g. "1000" -> "$1,000.00")
-        const formattedPrice = `$${parseFloat(expectedPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const formattedPrice = getFormattedPrice(expectedPrice);
         await expect(item).toContainText(formattedPrice);
     }
 }

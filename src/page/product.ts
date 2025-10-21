@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { Product } from "../models/product.ts";
 import { HomePage } from "./home.ts";
+import { random } from "../utils/random.ts";
 
 export class ProductPage extends HomePage {
     readonly gridViewLink: Locator;
@@ -29,7 +30,7 @@ export class ProductPage extends HomePage {
 
     async addRandomItemToCart(): Promise<Product> {
         const itemCount = await this.items.count();
-        const randomIndex = Math.floor(Math.random() * itemCount);
+        const randomIndex = random(itemCount);
         const product = await this.addItemToCartByIndex(randomIndex);
         return product;
     }
@@ -42,7 +43,7 @@ export class ProductPage extends HomePage {
         const maxItems = Math.min(count, itemCount);
 
         while (selectedIndices.size < maxItems) {
-            const randomIndex = Math.floor(Math.random() * itemCount);
+            const randomIndex = random(itemCount);
             selectedIndices.add(randomIndex);
         }
 
@@ -56,7 +57,7 @@ export class ProductPage extends HomePage {
         return products;
     }
 
-    async addSpecificItemToCart(index: number): Promise<Product | null> {
+    async addSpecificItemToCart(index: number): Promise<Product> {
         return await this.addItemToCartByIndex(index);
     }
 
@@ -64,30 +65,40 @@ export class ProductPage extends HomePage {
         return await this.items.count();
     }
 
-    async getProductInfoByIndex(index: number): Promise<Product | null> {
-        const itemCount = await this.items.count();
-        if (index >= itemCount || index < 0) {
-            return null;
-        }
-
+    async getProductInfoByIndex(index: number): Promise<Product> {
         const itemInfo = await this.items.nth(index).innerText();
         return this.parseProductInfo(itemInfo);
     }
 
     private parseProductInfo(text: string): Product {
+        const filteredLines = this.filterProductLines(text);
+
+        const productType = this.extractProductType(filteredLines);
+        const productName = this.extractProductName(filteredLines);
+        const { rating, totalRating } = this.extractRatingInfo(filteredLines);
+        const price = this.extractPrice(filteredLines);
+
+        return new Product(productType, productName, rating, totalRating, price);
+    }
+
+    private filterProductLines(text: string): string[] {
         const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-        // Skip unnecessary lines
         const skipLines = ['SALE', 'Quick View', 'ADD TO CART', 'Add to wishlist'];
-        const filteredLines = lines.filter(line => !skipLines.includes(line));
+        return lines.filter(line => !skipLines.includes(line));
+    }
 
-        // Get product information
-        const productType = filteredLines[0] || '';
-        const productName = filteredLines[1] || '';
+    private extractProductType(filteredLines: string[]): string {
+        return filteredLines[0] || '';
+    }
 
-        // Parse rating from line "Rated X.XX out of Y"
+    private extractProductName(filteredLines: string[]): string {
+        return filteredLines[1] || '';
+    }
+
+    private extractRatingInfo(filteredLines: string[]): { rating: number; totalRating: number } {
         let rating = 0;
         let totalRating = 0;
+
         const ratingLine = filteredLines.find(line => line.includes('Rated') && line.includes('out of'));
         if (ratingLine) {
             const ratingMatch = ratingLine.match(/Rated (\d+\.?\d*) out of (\d+)/);
@@ -97,8 +108,12 @@ export class ProductPage extends HomePage {
             }
         }
 
-        // Parse price from line containing $ - get the last price if multiple prices exist
+        return { rating, totalRating };
+    }
+
+    private extractPrice(filteredLines: string[]): number {
         let price = 0;
+
         const priceLine = filteredLines.find(line => line.includes('$'));
         if (priceLine) {
             // Find all prices in the line: e.g. $1,999.00 $1,000.00
@@ -113,7 +128,7 @@ export class ProductPage extends HomePage {
             }
         }
 
-        return new Product(productType, productName, rating, totalRating, price);
+        return price;
     }
 
     async switchToGridView() {
