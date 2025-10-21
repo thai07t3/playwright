@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
-import { CustomerInfo } from "../models/customerInfo.ts";
-import { CheckoutTable } from "../table/checkoutTable.ts";
+import { CustomerInfo } from "../models/customer.info.ts";
+import { CheckoutTable } from "../table/checkout.table.ts";
 
 export class CheckoutPage extends HomePage {
     readonly billingLabel: Locator;

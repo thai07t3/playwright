@@ -4,7 +4,7 @@ import { LoginPage } from '../page/login.ts';
 import { ProductPage } from '../page/product.ts';
 import { CartPage } from '../page/cart.ts';
 import { CheckoutPage } from '../page/checkout.ts';
-import { CustomerRepository, CustomerInfo } from '../models/customerInfo.ts';
+import { CustomerRepository, CustomerInfo } from '../models/customer.info.ts';
 
 export type User = {
     username: string;
