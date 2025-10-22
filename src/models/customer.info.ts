@@ -107,7 +107,12 @@ export class CustomerRepository {
   }
 }
 
-export function getUser(): { username: string; password: string } {
+export type User = {
+  username: string;
+  password: string;
+};
+
+export function getUser(): User {
   return {
     username: process.env.USERNAME || "",
     password: process.env.PASSWORD || "",

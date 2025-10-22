@@ -8,12 +8,8 @@ import {
   CustomerRepository,
   CustomerInfo,
   getUser,
+  type User,
 } from "../models/customer.info.ts";
-
-export type User = {
-  username: string;
-  password: string;
-};
 
 type Pages = {
   homePage: HomePage;
