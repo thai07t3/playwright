@@ -106,3 +106,10 @@ export class CustomerRepository {
     return new CustomerInfo(updatedData);
   }
 }
+
+export function getUser(): { username: string; password: string } {
+  return {
+    username: process.env.USERNAME || "",
+    password: process.env.PASSWORD || "",
+  };
+}

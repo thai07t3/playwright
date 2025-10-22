@@ -4,7 +4,11 @@ import { LoginPage } from "../page/login.ts";
 import { ProductPage } from "../page/product.ts";
 import { CartPage } from "../page/cart.ts";
 import { CheckoutPage } from "../page/checkout.ts";
-import { CustomerRepository, CustomerInfo } from "../models/customer.info.ts";
+import {
+  CustomerRepository,
+  CustomerInfo,
+  getUser,
+} from "../models/customer.info.ts";
 
 export type User = {
   username: string;
@@ -49,17 +53,7 @@ export const test = base.extend<Pages>({
     await use(new CheckoutPage(page));
   },
 
-  user: async (_, use) => {
-    const user: User = {
-      username: process.env.USERNAME || "",
-      password: process.env.PASSWORD || "",
-    };
-    await use(user);
-  },
+  user: getUser(),
 
-  customerInfo: async (_, use) => {
-    // Load customer data from JSON file
-    const customerInfo = CustomerRepository.loadCustomer();
-    await use(customerInfo);
-  },
+  customerInfo: CustomerRepository.loadCustomer(),
 });
