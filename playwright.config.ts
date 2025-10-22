@@ -18,6 +18,10 @@ export default defineConfig({
   use: {
     baseURL: 'https://demo.testarchitect.com/',
     trace: 'on-first-retry',
+    screenshot: {
+      mode: 'only-on-failure',
+      fullPage: true,
+    },
     headless: true,
     testIdAttribute: 'id',
     actionTimeout: 10_000,
