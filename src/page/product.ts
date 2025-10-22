@@ -4,158 +4,170 @@ import { HomePage } from "./home.ts";
 import { random } from "../utils/random.ts";
 
 export class ProductPage extends HomePage {
-    readonly gridViewLink: Locator;
-    readonly listViewLink: Locator;
-    readonly items: Locator;
-    readonly loadingCircle: Locator;
+  readonly gridViewLink: Locator;
+  readonly listViewLink: Locator;
+  readonly items: Locator;
+  readonly loadingCircle: Locator;
 
-    constructor(page: Page) {
-        super(page);
-        this.items = this.page.locator('div.content-product');
-        this.gridViewLink = this.page.locator('.switch-grid');
-        this.listViewLink = this.page.locator('.switch-list');
-        this.loadingCircle = this.page.locator('.et-loader svg').last();
+  constructor(page: Page) {
+    super(page);
+    this.items = this.page.locator("div.content-product");
+    this.gridViewLink = this.page.locator(".switch-grid");
+    this.listViewLink = this.page.locator(".switch-list");
+    this.loadingCircle = this.page.locator(".et-loader svg").last();
+  }
+
+  private async addItemToCartByIndex(index: number): Promise<Product> {
+    const itemInfo = await this.items.nth(index).innerText();
+    const product = this.parseProductInfo(itemInfo);
+
+    // Add to cart and wait for loading to complete
+    await this.items
+      .nth(index)
+      .getByText(/add to cart/i)
+      .last()
+      .click();
+    await this.loadingCircle.waitFor({ state: "hidden" });
+
+    return product;
+  }
+
+  async addRandomItemToCart(): Promise<Product> {
+    const itemCount = await this.items.count();
+    const randomIndex = random(itemCount);
+    const product = await this.addItemToCartByIndex(randomIndex);
+    return product;
+  }
+
+  async addMultipleRandomItemsToCart(count: number): Promise<Product[]> {
+    const itemCount = await this.items.count();
+
+    // Generate array of unique random indices
+    const selectedIndices = new Set<number>();
+    const maxItems = Math.min(count, itemCount);
+
+    while (selectedIndices.size < maxItems) {
+      const randomIndex = random(itemCount);
+      selectedIndices.add(randomIndex);
     }
 
-    private async addItemToCartByIndex(index: number): Promise<Product> {
-        const itemInfo = await this.items.nth(index).innerText();
-        const product = this.parseProductInfo(itemInfo);
-
-        // Add to cart and wait for loading to complete
-        await this.items.nth(index).getByText(/add to cart/i).last().click();
-        await this.loadingCircle.waitFor({ state: 'hidden' });
-
-        return product;
+    // Add each selected item to cart using helper method
+    const products: Product[] = [];
+    for (const index of selectedIndices) {
+      const product = await this.addItemToCartByIndex(index);
+      products.push(product);
     }
 
-    async addRandomItemToCart(): Promise<Product> {
-        const itemCount = await this.items.count();
-        const randomIndex = random(itemCount);
-        const product = await this.addItemToCartByIndex(randomIndex);
-        return product;
+    return products;
+  }
+
+  async addSpecificItemToCart(index: number): Promise<Product> {
+    return await this.addItemToCartByIndex(index);
+  }
+
+  async getAvailableItemsCount(): Promise<number> {
+    return await this.items.count();
+  }
+
+  async getProductInfoByIndex(index: number): Promise<Product> {
+    const itemInfo = await this.items.nth(index).innerText();
+    return this.parseProductInfo(itemInfo);
+  }
+
+  private parseProductInfo(text: string): Product {
+    const filteredLines = this.filterProductLines(text);
+
+    const productType = this.extractProductType(filteredLines);
+    const productName = this.extractProductName(filteredLines);
+    const { rating, totalRating } = this.extractRatingInfo(filteredLines);
+    const price = this.extractPrice(filteredLines);
+
+    return new Product(productType, productName, rating, totalRating, price);
+  }
+
+  private filterProductLines(text: string): string[] {
+    const lines = text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+    const skipLines = ["SALE", "Quick View", "ADD TO CART", "Add to wishlist"];
+    return lines.filter((line) => !skipLines.includes(line));
+  }
+
+  private extractProductType(filteredLines: string[]): string {
+    return filteredLines[0] || "";
+  }
+
+  private extractProductName(filteredLines: string[]): string {
+    return filteredLines[1] || "";
+  }
+
+  private extractRatingInfo(filteredLines: string[]): {
+    rating: number;
+    totalRating: number;
+  } {
+    let rating = 0;
+    let totalRating = 0;
+
+    const ratingLine = filteredLines.find(
+      (line) => line.includes("Rated") && line.includes("out of"),
+    );
+    if (ratingLine) {
+      const ratingMatch = ratingLine.match(/Rated (\d+\.?\d*) out of (\d+)/);
+      if (ratingMatch && ratingMatch[1] && ratingMatch[2]) {
+        rating = parseFloat(ratingMatch[1]);
+        totalRating = parseInt(ratingMatch[2]);
+      }
     }
 
-    async addMultipleRandomItemsToCart(count: number): Promise<Product[]> {
-        const itemCount = await this.items.count();
+    return { rating, totalRating };
+  }
 
-        // Generate array of unique random indices
-        const selectedIndices = new Set<number>();
-        const maxItems = Math.min(count, itemCount);
+  private extractPrice(filteredLines: string[]): number {
+    let price = 0;
 
-        while (selectedIndices.size < maxItems) {
-            const randomIndex = random(itemCount);
-            selectedIndices.add(randomIndex);
+    const priceLine = filteredLines.find((line) => line.includes("$"));
+    if (priceLine) {
+      // Find all prices in the line: e.g. $1,999.00 $1,000.00
+      const priceMatches = priceLine.match(/\$(\d{1,3}(?:,\d{3})*\.?\d*)/g);
+      if (priceMatches && priceMatches.length > 0) {
+        // Get the last price (the price after sale)
+        const lastPrice = priceMatches[priceMatches.length - 1];
+        if (lastPrice) {
+          const cleanPrice = lastPrice.replace(/[$,]/g, ""); // Remove $ and comma
+          price = parseFloat(cleanPrice);
         }
-
-        // Add each selected item to cart using helper method
-        const products: Product[] = [];
-        for (const index of selectedIndices) {
-            const product = await this.addItemToCartByIndex(index);
-            products.push(product);
-        }
-
-        return products;
+      }
     }
 
-    async addSpecificItemToCart(index: number): Promise<Product> {
-        return await this.addItemToCartByIndex(index);
+    return price;
+  }
+
+  async switchToGridView() {
+    await this.gridViewLink.click();
+  }
+
+  async switchToListView() {
+    await this.listViewLink.click();
+  }
+
+  async switchViewTo(type: "grid" | "list") {
+    if (type === "grid") {
+      await this.switchToGridView();
+    } else {
+      await this.switchToListView();
     }
+  }
 
-    async getAvailableItemsCount(): Promise<number> {
-        return await this.items.count();
-    }
+  async shouldBeInGridView() {
+    await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
+    await this.page.waitForLoadState("networkidle");
+    //TODO: Verify that the product items are displayed in a grid layout
+  }
 
-    async getProductInfoByIndex(index: number): Promise<Product> {
-        const itemInfo = await this.items.nth(index).innerText();
-        return this.parseProductInfo(itemInfo);
-    }
-
-    private parseProductInfo(text: string): Product {
-        const filteredLines = this.filterProductLines(text);
-
-        const productType = this.extractProductType(filteredLines);
-        const productName = this.extractProductName(filteredLines);
-        const { rating, totalRating } = this.extractRatingInfo(filteredLines);
-        const price = this.extractPrice(filteredLines);
-
-        return new Product(productType, productName, rating, totalRating, price);
-    }
-
-    private filterProductLines(text: string): string[] {
-        const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        const skipLines = ['SALE', 'Quick View', 'ADD TO CART', 'Add to wishlist'];
-        return lines.filter(line => !skipLines.includes(line));
-    }
-
-    private extractProductType(filteredLines: string[]): string {
-        return filteredLines[0] || '';
-    }
-
-    private extractProductName(filteredLines: string[]): string {
-        return filteredLines[1] || '';
-    }
-
-    private extractRatingInfo(filteredLines: string[]): { rating: number; totalRating: number } {
-        let rating = 0;
-        let totalRating = 0;
-
-        const ratingLine = filteredLines.find(line => line.includes('Rated') && line.includes('out of'));
-        if (ratingLine) {
-            const ratingMatch = ratingLine.match(/Rated (\d+\.?\d*) out of (\d+)/);
-            if (ratingMatch && ratingMatch[1] && ratingMatch[2]) {
-                rating = parseFloat(ratingMatch[1]);
-                totalRating = parseInt(ratingMatch[2]);
-            }
-        }
-
-        return { rating, totalRating };
-    }
-
-    private extractPrice(filteredLines: string[]): number {
-        let price = 0;
-
-        const priceLine = filteredLines.find(line => line.includes('$'));
-        if (priceLine) {
-            // Find all prices in the line: e.g. $1,999.00 $1,000.00
-            const priceMatches = priceLine.match(/\$(\d{1,3}(?:,\d{3})*\.?\d*)/g);
-            if (priceMatches && priceMatches.length > 0) {
-                // Get the last price (the price after sale)
-                const lastPrice = priceMatches[priceMatches.length - 1];
-                if (lastPrice) {
-                    const cleanPrice = lastPrice.replace(/[$,]/g, ''); // Remove $ and comma
-                    price = parseFloat(cleanPrice);
-                }
-            }
-        }
-
-        return price;
-    }
-
-    async switchToGridView() {
-        await this.gridViewLink.click();
-    }
-
-    async switchToListView() {
-        await this.listViewLink.click();
-    }
-
-    async switchViewTo(type: 'grid' | 'list') {
-        if (type === 'grid') {
-            await this.gridViewLink.click();
-        } else {
-            await this.listViewLink.click();
-        }
-    }
-
-    async shouldBeInGridView() {
-        await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
-        await this.page.waitForLoadState('networkidle');
-        //TODO: Verify that the product items are displayed in a grid layout
-    }
-
-    async shouldBeInListView() {
-        await expect.soft(this.listViewLink).toBeVisible();
-        await this.page.waitForLoadState('networkidle');
-        //TODO: Verify that the product items are displayed in a list layout
-    }
+  async shouldBeInListView() {
+    await expect.soft(this.listViewLink).toBeVisible();
+    await this.page.waitForLoadState("networkidle");
+    //TODO: Verify that the product items are displayed in a list layout
+  }
 }

@@ -1,12 +1,25 @@
 {
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
     "@faker-js/faker": "^10.1.0",
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.7.2",
     "dotenv": "^17.2.3",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
+    "jiti": "^2.6.1",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
   },
-  "scripts": {}
+  "scripts": {
+    "test": "npx playwright test",
+    "debug": "npx playwright test --debug --headed",
+    "check": "eslint . --ext .ts",
+    "fix": "eslint . --ext .ts --fix",
+    "format": "npx prettier './src/**/*.ts' --write",
+    "tsc": "npx tsc --noemit"
+  }
 }

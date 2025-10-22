@@ -8,4 +8,4 @@ export enum AllDepartments {
   Electronic_Components_Supplies = "Electronic Components & Supplies",
   Phones_Telecommunications = "Phones & Telecommunications",
   Watches = "Watches",
-};
+}
