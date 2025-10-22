@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
-import type { User } from "../fixtures/test.context.ts";
+import type { User } from "../models/customer.info.ts";
 
 export class LoginPage extends HomePage {
   readonly usernameInput: Locator;
