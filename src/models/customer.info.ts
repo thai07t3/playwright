@@ -49,22 +49,8 @@ export class CustomerInfo {
         }
     }
 
-    // Method to convert to object for easy logging/debugging
-    toObject(): Record<string, string> {
-        return {
-            firstName: this.firstName,
-            lastName: this.lastName,
-            companyName: this.companyName || '',
-            country: this.country,
-            streetAddress: this.streetAddress,
-            apartment: this.apartment,
-            postcode: this.postcode || '',
-            city: this.city,
-            state: this.state,
-            phone: this.phone,
-            email: this.email,
-            orderNotes: this.orderNotes || ''
-        };
+    toObject(): Record<string, any> {
+        return JSON.parse(JSON.stringify(this));
     }
 }
 

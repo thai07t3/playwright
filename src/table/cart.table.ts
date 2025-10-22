@@ -14,7 +14,7 @@ export class CartTable {
         this.cartItems = this.tableBody.locator('tr.cart_item');
     }
 
-    async verifyProductInCart(productName: string, expectedPrice: string) {
+    async shouldProductInCart(productName: string, expectedPrice: string) {
         const item = this.cartItems.filter({
             has: this.page.locator('td.product-details').getByRole('link', { name: productName })
         }).first();

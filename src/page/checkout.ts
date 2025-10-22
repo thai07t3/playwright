@@ -98,7 +98,7 @@ export class CheckoutPage extends HomePage {
     }
 
     async shouldProductInCheckout(productName: string, productPrice: string) {
-        await this.checkoutTable.verifyProductInCheckout(productName, productPrice);
+        await this.checkoutTable.shouldProductInCheckout(productName, productPrice);
     }
 
     async placeOrder() {

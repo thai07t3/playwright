@@ -22,7 +22,7 @@ export class CartPage extends HomePage {
     }
 
     async shouldProductInCart(product: Product) {
-        await this.cartTable.verifyProductInCart(product.name, product.price.toString());
+        await this.cartTable.shouldProductInCart(product.name, product.price.toString());
     }
 
     async shouldMultipleProductsInCart(products: Product[]) {

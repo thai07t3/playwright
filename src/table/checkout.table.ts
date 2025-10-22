@@ -12,7 +12,7 @@ export class CheckoutTable {
         this.tableBody = this.table.locator('tbody');
     }
 
-    async verifyProductInCheckout(productName: string, productPrice: string) {
+    async shouldProductInCheckout(productName: string, productPrice: string) {
         const productRow = this.tableBody.getByRole('row').filter({
             hasText: productName
         });

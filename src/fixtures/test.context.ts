@@ -51,8 +51,8 @@ export const test = base.extend<Pages>({
 
     user: async ({ }, use) => {
         const user: User = {
-            username: process.env.USERNAME || 'thai.luu@agest.vn',
-            password: process.env.PASSWORD || '6j4gX3sTVz4NmYQ'
+            username: process.env.USERNAME || '',
+            password: process.env.PASSWORD || '',
         };
         await use(user);
     },
