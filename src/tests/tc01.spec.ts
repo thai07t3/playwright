@@ -1,5 +1,5 @@
 import { test } from "../fixtures/test.context.ts";
-import { AllDepartments } from "../type/all.deparments.ts";
+import { Department } from "../type/all.deparments.ts";
 
 test.describe("E-commerce Test Cases", () => {
   test(
@@ -16,7 +16,7 @@ test.describe("E-commerce Test Cases", () => {
     }) => {
       // 2-7: Navigate to product category and verify views
       await loginPage.selectDepartment(
-        AllDepartments.Electronic_Components_Supplies,
+        Department.Electronic_Components_Supplies,
       );
       await productPage.shouldBeInGridView();
       await productPage.switchToListView();

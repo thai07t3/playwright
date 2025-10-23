@@ -1,4 +1,4 @@
-export enum AllDepartments {
+export enum Department {
   Automobiles_Motorcycles = "Automobiles & Motorcycles",
   Car_Electronics = "Car Electronics",
   Mobile_Phone_Accessories = "Mobile Phone Accessories",

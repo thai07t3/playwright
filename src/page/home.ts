@@ -1,23 +1,28 @@
 import type { Locator, Page } from "@playwright/test";
-import type { AllDepartments } from "../type/all.deparments.ts";
+import type { Department } from "../type/all.deparments.ts";
 
 export class HomePage {
   readonly page: Page;
-  readonly closeButton: Locator;
+  readonly popupTitle: Locator;
+  readonly closePopupButton: Locator;
   readonly loginLink: Locator;
   readonly allDepartmentsLabel: Locator;
   readonly cartLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.closeButton = this.page.getByRole("button", { name: "Close" });
+    this.popupTitle = this.page.getByText("Our Spring Sale Has Started");
+    this.closePopupButton = this.page.getByRole("button", { name: "Close" });
     this.loginLink = this.page.getByRole("link", { name: "Log in / Sign up" });
     this.allDepartmentsLabel = this.page.getByText("All Departments");
     this.cartLink = this.page.locator(".cart-type1 svg").first();
   }
 
   async closePopupIfPresent() {
-    await this.closeButton.click({ timeout: 5000 });
+    const isPopupVisible = await this.popupTitle.isVisible({ timeout: 5000 });
+    if (isPopupVisible) {
+      await this.closePopupButton.click();
+    }
   }
 
   async goToLogin() {
@@ -29,7 +34,7 @@ export class HomePage {
     await this.cartLink.click();
   }
 
-  async selectDepartment(departmentName: AllDepartments) {
+  async selectDepartment(departmentName: Department) {
     await this.allDepartmentsLabel.hover();
     const departmentLink = this.page
       .locator(".item-link")
