@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { Product } from "../models/product.ts";
 import { HomePage } from "./home.ts";
 import { random } from "../utils/random.ts";
+import { GRID_SIZE, LIST_SIZE } from "../utils/helper.ts";
 
 export class ProductPage extends HomePage {
   readonly gridViewLink: Locator;
@@ -152,22 +153,28 @@ export class ProductPage extends HomePage {
   }
 
   async switchViewTo(type: "grid" | "list") {
-    if (type === "grid") {
-      await this.switchToGridView();
-    } else {
-      await this.switchToListView();
-    }
+    type === "grid"
+      ? await this.switchToGridView()
+      : await this.switchToListView();
   }
 
   async shouldBeInGridView() {
-    await expect.soft(this.gridViewLink).toHaveClass(/switcher-active/);
-    await this.page.waitForLoadState("networkidle");
-    //TODO: Verify that the product items are displayed in a grid layout
+    await this.shouldBeInView(this.gridViewLink, GRID_SIZE);
   }
 
   async shouldBeInListView() {
-    await expect.soft(this.listViewLink).toBeVisible();
-    await this.page.waitForLoadState("networkidle");
-    //TODO: Verify that the product items are displayed in a list layout
+    await this.shouldBeInView(this.listViewLink, LIST_SIZE);
+  }
+
+  private async shouldBeInView(activeLink: Locator, expectedWidth: string) {
+    // Verify the correct view link is active
+    await expect.soft(activeLink).toHaveClass(/switcher-active/);
+
+    for (const item of await this.items.all()) {
+      const width = await item.locator("xpath=..").evaluate((el) => {
+        return window.getComputedStyle(el).getPropertyValue("width");
+      });
+      expect.soft(width).toBe(expectedWidth);
+    }
   }
 }

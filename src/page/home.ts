@@ -19,7 +19,10 @@ export class HomePage {
   }
 
   async closePopupIfPresent() {
-    const isPopupVisible = await this.popupTitle.isVisible({ timeout: 5000 });
+    const isPopupVisible = await this.popupTitle
+      .waitFor({ state: "visible", timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false);
     if (isPopupVisible) {
       await this.closePopupButton.click();
     }

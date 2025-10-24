@@ -14,9 +14,9 @@ export class CartPage extends HomePage {
     this.cartTitle = this.page.getByText(/shopping cart/i);
     this.cartTable = new CartTable(page);
     this.totalPrice = this.page
-      .getByText("Total")
-      .locator("..")
-      .getByText(/^\$\d+\.\d{2}$/);
+      .getByRole("cell")
+      .filter({ hasText: /^\$\d+\.\d{2}$/ })
+      .last();
     this.checkoutButton = this.page.getByRole("link", {
       name: "Proceed to checkout",
     });
