@@ -1,0 +1,14 @@
+{
+    "firstName": "Thai",
+    "lastName": "Luu",
+    "companyName": "Acme Corp",
+    "country": "US",
+    "streetAddress": "123 Main St",
+    "apartment": "Apt 4B",
+    "postcode": "93501",
+    "city": "New York",
+    "state": "California",
+    "phone": "5551234567",
+    "email": "thai.luu@agest.vn",
+    "orderNotes": "Please leave the package at the front door."
+}
