@@ -10,7 +10,6 @@ import {
   getUser,
   type User,
 } from "../models/customer.info.ts";
-import { Department } from "../type/all.deparments.ts";
 
 type Pages = {
   homePage: HomePage;
@@ -36,11 +35,8 @@ export const test = base.extend<Pages>({
     await use(loginPage);
   },
 
-  shopPage: async ({ page, loginPage }, use) => {
-    const shopPage = new ShopPage(page);
-    await use(shopPage);
-    await loginPage.selectDepartment(Department.Electronic_Components_Supplies);
-    await shopPage.switchToGridView();
+  shopPage: async ({ page }, use) => {
+    await use(new ShopPage(page));
   },
 
   cartPage: async ({ page }, use) => {
