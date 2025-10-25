@@ -4,7 +4,7 @@ import { HomePage } from "./home.ts";
 import { random } from "../utils/random.ts";
 import { GRID_SIZE, LIST_SIZE } from "../utils/helper.ts";
 
-export class ProductPage extends HomePage {
+export class ShopPage extends HomePage {
   readonly gridViewLink: Locator;
   readonly listViewLink: Locator;
   readonly items: Locator;
@@ -153,6 +153,7 @@ export class ProductPage extends HomePage {
   }
 
   async switchViewTo(type: "grid" | "list") {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     type === "grid"
       ? await this.switchToGridView()
       : await this.switchToListView();

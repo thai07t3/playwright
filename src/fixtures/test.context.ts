@@ -1,7 +1,7 @@
 import { test as base } from "@playwright/test";
 import { HomePage } from "../page/home.ts";
 import { LoginPage } from "../page/login.ts";
-import { ProductPage } from "../page/product.ts";
+import { ShopPage } from "../page/shop.ts";
 import { CartPage } from "../page/cart.ts";
 import { CheckoutPage } from "../page/checkout.ts";
 import {
@@ -10,11 +10,12 @@ import {
   getUser,
   type User,
 } from "../models/customer.info.ts";
+import { Department } from "../type/all.deparments.ts";
 
 type Pages = {
   homePage: HomePage;
   loginPage: LoginPage;
-  productPage: ProductPage;
+  shopPage: ShopPage;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
   user: User;
@@ -35,8 +36,11 @@ export const test = base.extend<Pages>({
     await use(loginPage);
   },
 
-  productPage: async ({ page }, use) => {
-    await use(new ProductPage(page));
+  shopPage: async ({ page, loginPage }, use) => {
+    const shopPage = new ShopPage(page);
+    await use(shopPage);
+    await loginPage.selectDepartment(Department.Electronic_Components_Supplies);
+    await shopPage.switchToGridView();
   },
 
   cartPage: async ({ page }, use) => {

@@ -7,24 +7,18 @@ test.describe("E-commerce Test Cases", () => {
     {
       tag: ["@smoke"],
     },
-    async ({
-      loginPage,
-      productPage,
-      cartPage,
-      checkoutPage,
-      customerInfo,
-    }) => {
+    async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 2-7: Navigate to product category and verify views
       await loginPage.selectDepartment(
         Department.Electronic_Components_Supplies,
       );
-      await productPage.shouldBeInGridView();
-      await productPage.switchToListView();
-      await productPage.shouldBeInListView();
+      await shopPage.shouldBeInGridView();
+      await shopPage.switchToListView();
+      await shopPage.shouldBeInListView();
 
       // 8-11: Add random item to cart and verify in cart
-      const selectedProduct = await productPage.addRandomItemToCart();
-      await productPage.goToCart();
+      const selectedProduct = await shopPage.addRandomItemToCart();
+      await shopPage.goToCart();
       await cartPage.shouldCartContain([selectedProduct]);
 
       //12-14: Proceed to checkout and verify order
