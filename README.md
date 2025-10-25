@@ -60,6 +60,12 @@ The project uses a `.env` file to manage environment variables. Follow these ste
 npx playwright test
 ```
 
+Or
+
+```bash
+npm run test
+```
+
 ### Run tests with browser visible (headed mode)
 
 ```bash

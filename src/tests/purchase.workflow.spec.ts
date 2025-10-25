@@ -1,4 +1,5 @@
 import { test } from "../fixtures/test.context.ts";
+import { LoginPage } from "../page/login.ts";
 import { Department } from "../type/all.deparments.ts";
 import { Menu } from "../type/menu.ts";
 import { Payment } from "../type/payment.ts";
@@ -65,7 +66,7 @@ test.describe("E-commerce Test Cases", () => {
 
   for (const payment of Object.values(Payment)) {
     test(
-      `TC03: Multiple Payment Methods with ${payment}`,
+      `TC03: Payment Method With "${payment}"`,
       {
         tag: ["@regression"],
       },
@@ -84,4 +85,32 @@ test.describe("E-commerce Test Cases", () => {
       },
     );
   }
+
+  // Override test to setup guest user purchase flow
+  test.extend({
+    loginPage: async ({ page, homePage }, use) => {
+      const loginPage = new LoginPage(page);
+      await page.goto(process.env.URL || "/");
+      await homePage.closePopupIfPresent();
+      await use(loginPage);
+    },
+  })(
+    "TC06: Guest User Can Purchase",
+    {
+      tag: ["@regression"],
+    },
+    async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
+      // 3-4: Select a random item and add to cart (as guest user without login)
+      await loginPage.navigateTo(Menu.Shop);
+      const selectedProduct = await shopPage.addRandomItemToCart();
+      await shopPage.goToCart();
+
+      // 5: Proceed to complete order as guest user
+      await cartPage.checkout();
+      await checkoutPage.shouldMultiProductsInCheckout([selectedProduct]);
+      await checkoutPage.fillBillingInformation(customerInfo);
+      await checkoutPage.placeOrder();
+      await checkoutPage.shouldShowOrderConfirmation();
+    },
+  );
 });
