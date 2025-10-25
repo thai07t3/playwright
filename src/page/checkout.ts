@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
 import { CustomerInfo } from "../models/customer.info.ts";
 import { CheckoutTable } from "../table/checkout.table.ts";
+import type { Product } from "../models/product.ts";
 
 export class CheckoutPage extends HomePage {
   readonly billingLabel: Locator;
@@ -55,7 +56,7 @@ export class CheckoutPage extends HomePage {
     this.orderConfirmationMessage = this.page.getByText(
       "Thank you. Your order has been received",
     );
-    this.blockUI = this.page.locator(".blockOverlay");
+    this.blockUI = this.page.locator(".blockOverlay").last();
   }
 
   async shouldCheckoutPageDisplay() {
@@ -108,6 +109,20 @@ export class CheckoutPage extends HomePage {
 
   async shouldProductInCheckout(productName: string, productPrice: string) {
     await this.checkoutTable.shouldProductInCheckout(productName, productPrice);
+  }
+
+  async shouldMultiProductsInCheckout(products: Product[]) {
+    for (const product of products) {
+      await this.checkoutTable.shouldProductInCheckout(
+        product.name,
+        product.price.toString(),
+      );
+    }
+  }
+
+  async selectPaymentMethod(methodName: string) {
+    const paymentMethodRadio = this.page.getByLabel(methodName);
+    await paymentMethodRadio.click();
   }
 
   async placeOrder() {

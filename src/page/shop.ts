@@ -62,6 +62,15 @@ export class ShopPage extends HomePage {
     return products;
   }
 
+  async addMultipleItemsToCart(count: number = 3): Promise<Product[]> {
+    const products: Product[] = [];
+    for (let i = 1; i <= count; i++) {
+      const product = await this.addItemToCartByIndex(i);
+      products.push(product);
+    }
+    return products;
+  }
+
   async addSpecificItemToCart(index: number): Promise<Product> {
     return await this.addItemToCartByIndex(index);
   }

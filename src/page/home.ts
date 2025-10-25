@@ -46,4 +46,11 @@ export class HomePage {
     await departmentLink.scrollIntoViewIfNeeded();
     await departmentLink.click();
   }
+
+  async navigateTo(menuName: string) {
+    await this.page
+      .getByTestId("menu-main-menu-1")
+      .getByRole("link", { name: menuName })
+      .click();
+  }
 }
