@@ -21,8 +21,8 @@ export class ShopPage extends HomePage {
     this.gridViewLink = this.page.locator(".switch-grid");
     this.listViewLink = this.page.locator(".switch-list");
     this.loadingCircle = this.page.locator(".et-loader svg").last();
-    this.sortDropdown = this.page.getByRole("combobox", { name: "Shop order" });
-    this.sortForm = this.page.locator("form.woocommerce-ordering");
+    this.sortDropdown = this.page.getByLabel('Shop order');
+    this.sortForm = this.page.locator("form.woocommerce-ordering"); // another locator don't work
     this.sortManager = new SortManager(
       this.sortDropdown,
       this.sortForm,
