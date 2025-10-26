@@ -17,9 +17,9 @@ test.describe("E-commerce Test Cases", () => {
 
       // 5-6:. Sort items by price (low to high / high to low) and verify order
       await shopPage.sortProductsBy(SortType.Sort_by_price_low_to_high);
-      await shopPage.verifySortOrder(SortType.Sort_by_price_low_to_high);
+      await shopPage.shouldSortOrderBy(SortType.Sort_by_price_low_to_high);
       await shopPage.sortProductsBy(SortType.Sort_by_price_high_to_low);
-      await shopPage.verifySortOrder(SortType.Sort_by_price_high_to_low);
+      await shopPage.shouldSortOrderBy(SortType.Sort_by_price_high_to_low);
     },
   );
 });

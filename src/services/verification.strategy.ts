@@ -13,11 +13,11 @@ export class VerificationStrategyFactory {
         return new LowToHighPriceVerificationStrategy();
       case SortType.Sort_by_price_high_to_low:
         return new HighToLowPriceVerificationStrategy();
-      case SortType.Default_sorting:
-      case SortType.Sort_by_popularity:
-      case SortType.Sort_by_average_rating:
-      case SortType.Sort_by_latest:
-        return new NoVerificationStrategy();
+      //TODO: Implement other verification strategies as needed
+      // case SortType.Default_sorting:
+      // case SortType.Sort_by_popularity:
+      // case SortType.Sort_by_average_rating:
+      // case SortType.Sort_by_latest:
       default:
         throw new Error(`Unsupported verification for sort type: ${sortType}`);
     }
@@ -57,13 +57,5 @@ class HighToLowPriceVerificationStrategy implements VerificationStrategy {
         )
         .toBeGreaterThanOrEqual(nextProduct.price);
     }
-  }
-}
-
-class NoVerificationStrategy implements VerificationStrategy {
-  async verify(products: Product[]): Promise<void> {
-    console.log(
-      `Sorting applied successfully. Total products: ${products.length}`,
-    );
   }
 }

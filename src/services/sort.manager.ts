@@ -21,7 +21,7 @@ export class SortManager {
     await strategy.execute();
   }
 
-  async verifySortOrder(
+  async shouldSortOrderBy(
     products: Product[],
     sortType: SortType,
   ): Promise<void> {

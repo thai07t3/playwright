@@ -41,16 +41,11 @@ abstract class BaseSortStrategy implements SortStrategy {
   abstract getSortLabel(): string;
 
   async execute(): Promise<void> {
+    // Select the desired sort option
     await this.sortDropdown.selectOption({ label: this.getSortLabel() });
-    await this.submitAndWait();
-  }
-
-  private async submitAndWait(): Promise<void> {
+    // Trigger form submission and wait for page to load
     await this.sortForm.evaluate((form: HTMLFormElement) => form.submit());
-    await this.page
-      .locator(".loader-circular")
-      .last()
-      .waitFor({ state: "hidden" });
+    await this.page.waitForLoadState("networkidle");
   }
 }
 
