@@ -3,12 +3,17 @@ import { Product } from "../models/product.ts";
 import { HomePage } from "./home.ts";
 import { random } from "../utils/random.ts";
 import { GRID_SIZE, LIST_SIZE } from "../utils/helper.ts";
+import { SortManager } from "../services/sort.manager.ts";
+import { SortType } from "../type/sort.ts";
 
 export class ShopPage extends HomePage {
   readonly gridViewLink: Locator;
   readonly listViewLink: Locator;
   readonly items: Locator;
   readonly loadingCircle: Locator;
+  readonly sortDropdown: Locator;
+  readonly sortForm: Locator;
+  private readonly sortManager: SortManager;
 
   constructor(page: Page) {
     super(page);
@@ -16,6 +21,13 @@ export class ShopPage extends HomePage {
     this.gridViewLink = this.page.locator(".switch-grid");
     this.listViewLink = this.page.locator(".switch-list");
     this.loadingCircle = this.page.locator(".et-loader svg").last();
+    this.sortDropdown = this.page.getByLabel("Shop order");
+    this.sortForm = this.page.locator("form.woocommerce-ordering");
+    this.sortManager = new SortManager(
+      this.sortDropdown,
+      this.sortForm,
+      this.page,
+    );
   }
 
   private async addItemToCartByIndex(index: number): Promise<Product> {
@@ -186,5 +198,26 @@ export class ShopPage extends HomePage {
       });
       expect.soft(width).toBe(expectedWidth);
     }
+  }
+
+  async getAllProducts(): Promise<Product[]> {
+    const products: Product[] = [];
+    const itemCount = await this.items.count();
+
+    for (let i = 0; i < itemCount; i++) {
+      const product = await this.getProductInfoByIndex(i);
+      products.push(product);
+    }
+
+    return products;
+  }
+
+  async sortProductsBy(sortType: SortType): Promise<void> {
+    await this.sortManager.sortBy(sortType);
+  }
+
+  async shouldSortOrderBy(sortType: SortType): Promise<void> {
+    const products = await this.getAllProducts();
+    await this.sortManager.shouldSortOrderBy(products, sortType);
   }
 }
