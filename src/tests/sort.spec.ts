@@ -1,6 +1,6 @@
 import { test } from "../fixtures/test.context.ts";
-import { Menu } from "../type/menu.ts";
-import { SortType } from "../type/sort.ts";
+import { Menu } from "../type/menu.type.ts";
+import { SortType } from "../type/sort.type.ts";
 
 test.describe("E-commerce Test Cases", () => {
   test(
@@ -10,16 +10,16 @@ test.describe("E-commerce Test Cases", () => {
     },
     async ({ loginPage, shopPage }) => {
       // 3. Go to Shop page
-      await loginPage.navigateTo(Menu.Shop);
+      await loginPage.navigateTo(Menu.SHOP);
 
       // 4. Switch view to list
       await shopPage.switchViewTo("list");
 
       // 5-6:. Sort items by price (low to high / high to low) and verify order
-      await shopPage.sortProductsBy(SortType.Sort_by_price_low_to_high);
-      await shopPage.shouldSortOrderBy(SortType.Sort_by_price_low_to_high);
-      await shopPage.sortProductsBy(SortType.Sort_by_price_high_to_low);
-      await shopPage.shouldSortOrderBy(SortType.Sort_by_price_high_to_low);
+      await shopPage.sortProductsBy(SortType.SORT_BY_PRICE_LOW_TO_HIGH);
+      await shopPage.shouldSortOrderBy(SortType.SORT_BY_PRICE_LOW_TO_HIGH);
+      await shopPage.sortProductsBy(SortType.SORT_BY_PRICE_HIGH_TO_LOW);
+      await shopPage.shouldSortOrderBy(SortType.SORT_BY_PRICE_HIGH_TO_LOW);
     },
   );
 });

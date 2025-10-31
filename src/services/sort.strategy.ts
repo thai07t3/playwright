@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { SortType } from "../type/sort.ts";
+import { SortType } from "../type/sort.type.ts";
 
 export interface SortStrategy {
   execute(): Promise<void>;
@@ -13,17 +13,17 @@ export class SortStrategyFactory {
     sortType: SortType,
   ): SortStrategy {
     switch (sortType) {
-      case SortType.Default_sorting:
+      case SortType.DEFAULT_SORTING:
         return new DefaultSortStrategy(sortDropdown, sortForm, page);
-      case SortType.Sort_by_popularity:
+      case SortType.SORT_BY_POPULARITY:
         return new PopularitySortStrategy(sortDropdown, sortForm, page);
-      case SortType.Sort_by_average_rating:
+      case SortType.SORT_BY_AVERAGE_RATING:
         return new RatingSortStrategy(sortDropdown, sortForm, page);
-      case SortType.Sort_by_latest:
+      case SortType.SORT_BY_LATEST:
         return new NewnessSortStrategy(sortDropdown, sortForm, page);
-      case SortType.Sort_by_price_low_to_high:
+      case SortType.SORT_BY_PRICE_LOW_TO_HIGH:
         return new LowToHighPriceSortStrategy(sortDropdown, sortForm, page);
-      case SortType.Sort_by_price_high_to_low:
+      case SortType.SORT_BY_PRICE_HIGH_TO_LOW:
         return new HighToLowPriceSortStrategy(sortDropdown, sortForm, page);
       default:
         throw new Error(`Unsupported sort type: ${sortType}`);
@@ -51,36 +51,36 @@ abstract class BaseSortStrategy implements SortStrategy {
 
 class DefaultSortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Default_sorting;
+    return SortType.DEFAULT_SORTING;
   }
 }
 
 class PopularitySortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Sort_by_popularity;
+    return SortType.SORT_BY_POPULARITY;
   }
 }
 
 class RatingSortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Sort_by_average_rating;
+    return SortType.SORT_BY_AVERAGE_RATING;
   }
 }
 
 class NewnessSortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Sort_by_latest;
+    return SortType.SORT_BY_LATEST;
   }
 }
 
 class LowToHighPriceSortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Sort_by_price_low_to_high;
+    return SortType.SORT_BY_PRICE_LOW_TO_HIGH;
   }
 }
 
 class HighToLowPriceSortStrategy extends BaseSortStrategy {
   getSortLabel(): string {
-    return SortType.Sort_by_price_high_to_low;
+    return SortType.SORT_BY_PRICE_HIGH_TO_LOW;
   }
 }

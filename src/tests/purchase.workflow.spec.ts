@@ -1,8 +1,8 @@
 import { test } from "../fixtures/test.context.ts";
 import { LoginPage } from "../page/login.ts";
-import { Department } from "../type/all.deparments.ts";
-import { Menu } from "../type/menu.ts";
-import { Payment } from "../type/payment.ts";
+import { Department } from "../type/deparments.type.ts";
+import { Menu } from "../type/menu.type.ts";
+import { Payment } from "../type/payment.type.ts";
 
 test.describe("E-commerce Test Cases", () => {
   test(
@@ -13,7 +13,7 @@ test.describe("E-commerce Test Cases", () => {
     async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 2-7: Navigate to product category and verify views
       await loginPage.selectDepartment(
-        Department.Electronic_Components_Supplies,
+        Department.ELECTRONIC_COMPONENTS_SUPPLIES,
       );
       await shopPage.shouldBeInGridView();
       await shopPage.switchToListView();
@@ -38,7 +38,7 @@ test.describe("E-commerce Test Cases", () => {
       await checkoutPage.shouldShowOrderConfirmation();
 
       //Reset switches after test
-      await checkoutPage.navigateTo(Menu.Shop);
+      await checkoutPage.navigateTo(Menu.SHOP);
       await shopPage.switchToGridView();
     },
   );
@@ -50,7 +50,7 @@ test.describe("E-commerce Test Cases", () => {
     },
     async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 3-4: Select multiple items and add to cart
-      await loginPage.navigateTo(Menu.Shop);
+      await loginPage.navigateTo(Menu.SHOP);
       const selectedProducts = await shopPage.addMultipleItemsToCart();
       await shopPage.goToCart();
       await cartPage.shouldCartContain(selectedProducts);
@@ -72,7 +72,7 @@ test.describe("E-commerce Test Cases", () => {
       },
       async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
         // 3-4: Navigate to shop and add random item to cart
-        await loginPage.navigateTo(Menu.Shop);
+        await loginPage.navigateTo(Menu.SHOP);
         await shopPage.addRandomItemToCart();
 
         // 5-8: Go to cart and proceed to checkout
@@ -101,7 +101,7 @@ test.describe("E-commerce Test Cases", () => {
     },
     async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 3-4: Select a random item and add to cart (as guest user without login)
-      await loginPage.navigateTo(Menu.Shop);
+      await loginPage.navigateTo(Menu.SHOP);
       const selectedProduct = await shopPage.addRandomItemToCart();
       await shopPage.goToCart();
 

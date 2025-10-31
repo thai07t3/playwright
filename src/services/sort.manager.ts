@@ -2,7 +2,7 @@ import type { Locator, Page } from "@playwright/test";
 import { SortStrategyFactory } from "./sort.strategy.ts";
 import { VerificationStrategyFactory } from "./verification.strategy.ts";
 import type { Product } from "../models/product.ts";
-import { SortType } from "../type/sort.ts";
+import { SortType } from "../type/sort.type.ts";
 
 export class SortManager {
   constructor(

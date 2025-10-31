@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import type { Product } from "../models/product.ts";
-import { SortType } from "../type/sort.ts";
+import { SortType } from "../type/sort.type.ts";
 
 export interface VerificationStrategy {
   verify(products: Product[]): Promise<void>;
@@ -9,15 +9,15 @@ export interface VerificationStrategy {
 export class VerificationStrategyFactory {
   static create(sortType: SortType): VerificationStrategy {
     switch (sortType) {
-      case SortType.Sort_by_price_low_to_high:
+      case SortType.SORT_BY_PRICE_LOW_TO_HIGH:
         return new LowToHighPriceVerificationStrategy();
-      case SortType.Sort_by_price_high_to_low:
+      case SortType.SORT_BY_PRICE_HIGH_TO_LOW:
         return new HighToLowPriceVerificationStrategy();
       //TODO: Implement other verification strategies as needed
-      // case SortType.Default_sorting:
-      // case SortType.Sort_by_popularity:
-      // case SortType.Sort_by_average_rating:
-      // case SortType.Sort_by_latest:
+      // case SortType.DEFAULT_SORTING:
+      // case SortType.SORT_BY_POPULARITY:
+      // case SortType.SORT_BY_AVERAGE_RATING:
+      // case SortType.SORT_BY_LATEST:
       default:
         throw new Error(`Unsupported verification for sort type: ${sortType}`);
     }

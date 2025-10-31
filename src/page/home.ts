@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import type { Department } from "../type/all.deparments.ts";
+import type { Department } from "../type/deparments.type.ts";
 
 export class HomePage {
   readonly page: Page;
@@ -40,9 +40,8 @@ export class HomePage {
   async selectDepartment(departmentName: Department) {
     await this.allDepartmentsLabel.hover();
     const departmentLink = this.page
-      .locator(".item-link")
-      .filter({ hasText: departmentName })
-      .first();
+      .getByTestId("menu-all-departments-1")
+      .getByRole("link", { name: departmentName });
     await departmentLink.scrollIntoViewIfNeeded();
     await departmentLink.click();
   }
