@@ -53,6 +53,8 @@ export class HomePage {
       .getByTestId("menu-main-menu-1")
       .getByRole("link", { name: menuName })
       .click();
+
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   async waitForBlockUIToDisappear() {
