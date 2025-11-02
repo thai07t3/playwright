@@ -8,6 +8,7 @@ export class HomePage {
   readonly loginLink: Locator;
   readonly allDepartmentsLabel: Locator;
   readonly cartLink: Locator;
+  readonly blockUI: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,6 +17,7 @@ export class HomePage {
     this.loginLink = this.page.getByRole("link", { name: "Log in / Sign up" });
     this.allDepartmentsLabel = this.page.getByText("All Departments");
     this.cartLink = this.page.locator(".cart-type1 svg").first();
+    this.blockUI = this.page.locator(".blockOverlay").last();
   }
 
   async closePopupIfPresent() {
@@ -51,5 +53,10 @@ export class HomePage {
       .getByTestId("menu-main-menu-1")
       .getByRole("link", { name: menuName })
       .click();
+  }
+
+  async waitForBlockUIToDisappear() {
+    await this.blockUI.waitFor({ state: "visible", timeout: 2000 });
+    await this.blockUI.waitFor({ state: "detached", timeout: 10000 });
   }
 }

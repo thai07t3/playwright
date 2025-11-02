@@ -1,3 +1,5 @@
+import type { CartItem } from "./cart.item.ts";
+
 export class Product {
   private _type: string;
   private _name: string;
@@ -37,5 +39,15 @@ export class Product {
 
   get price(): number {
     return this._price;
+  }
+
+  toCartItem(quantity: number = 1): CartItem {
+    const subtotal = (this._price * quantity).toFixed(2);
+    return {
+      name: this._name,
+      price: this._price.toString(),
+      quantity: quantity,
+      subtotal: subtotal,
+    };
   }
 }

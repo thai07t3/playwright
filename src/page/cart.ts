@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { HomePage } from "./home.ts";
 import { CartTable } from "../table/cart.table.ts";
 import type { Product } from "../models/product.ts";
+import type { CartItem } from "../models/cart.item.ts";
 
 export class CartPage extends HomePage {
   readonly cartTitle: Locator;
@@ -10,6 +11,7 @@ export class CartPage extends HomePage {
   readonly checkoutButton: Locator;
   readonly clearCartButton: Locator;
   readonly emptyCartMessage: Locator;
+  readonly updateCartButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -25,6 +27,9 @@ export class CartPage extends HomePage {
     this.clearCartButton = this.page.getByText("Clear shopping cart");
     this.emptyCartMessage = this.page.getByRole("heading", {
       name: "YOUR SHOPPING CART IS EMPTY",
+    });
+    this.updateCartButton = this.page.getByRole("button", {
+      name: "Update cart",
     });
   }
 
@@ -88,5 +93,40 @@ export class CartPage extends HomePage {
 
   async shouldShowEmptyCartMessage() {
     await expect(this.emptyCartMessage).toBeVisible();
+  }
+
+  async updateCart() {
+    await this.updateCartButton.click();
+    await this.waitForBlockUIToDisappear();
+  }
+
+  async isUpdateCartButtonEnabled() {
+    const updateCartButton = this.page.getByRole("button", {
+      name: "Update cart",
+    });
+    return await updateCartButton.isEnabled();
+  }
+
+  async shouldHaveCartItem(cartItem: CartItem) {
+    await this.cartTable.shouldHaveCartItem(cartItem);
+  }
+
+  async increaseProductQuantity(productName: string) {
+    await this.cartTable.increaseQuantity(productName);
+  }
+
+  async decreaseProductQuantity(productName: string) {
+    await this.cartTable.decreaseQuantity(productName);
+  }
+
+  async setProductQuantity(productName: string, quantity: number) {
+    await this.cartTable.changeQuantityTo(productName, quantity);
+  }
+
+  async shouldHaveProductWithQuantity(
+    product: Product,
+    expectedQuantity: number,
+  ) {
+    await this.shouldHaveCartItem(product.toCartItem(expectedQuantity));
   }
 }
