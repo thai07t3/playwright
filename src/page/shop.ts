@@ -30,6 +30,20 @@ export class ShopPage extends HomePage {
     );
   }
 
+  async openAProductByIndex(index: number) {
+    const itemInfo = await this.items.nth(index).innerText();
+    const product = this.parseProductInfo(itemInfo);
+    await this.items.nth(index).getByRole("link").first().click();
+    return product;
+  }
+
+  async openRandomProduct() {
+    const itemCount = await this.items.count();
+    const randomIndex = random(itemCount);
+    await this.openAProductByIndex(randomIndex);
+    await this.page.waitForLoadState("domcontentloaded");
+  }
+
   private async addItemToCartByIndex(index: number): Promise<Product> {
     const itemInfo = await this.items.nth(index).innerText();
     const product = this.parseProductInfo(itemInfo);
