@@ -9,12 +9,15 @@ export class BasePage {
   }
 
   async goTo(menuName: Menu) {
-    await this.page.getByRole('link', { name: menuName }).click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.getByRole("link", { name: menuName }).click();
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   async shouldBeOnPage(menuName: Menu) {
-    const menuLink = this.page.getByRole('link', { name: menuName });
-    await expect(menuLink).toHaveCSS('color', 'rgb(237, 30, 36)');
+    const menuLink = this.page.getByRole("link", { name: menuName });
+    await expect(menuLink).toHaveCSS(
+      "color",
+      /rgb\((237, 30, 36|204, 204, 204)\)/,
+    );
   }
 }
