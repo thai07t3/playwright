@@ -1,6 +1,6 @@
-import { test } from "../fixtures/test.context.ts";
-import { Menu } from "../type/menu.type.ts";
-import { SortType } from "../type/sort.type.ts";
+import { test } from "../../fixtures/test.context.ts";
+import { Menu } from "../../type/menu.type.ts";
+import { SortType } from "../../type/sort.type.ts";
 
 test.describe("E-commerce Test Cases", () => {
   test(

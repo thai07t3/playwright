@@ -1,7 +1,7 @@
-import { test } from "../fixtures/test.context.ts";
-import { Menu } from "../type/menu.type.ts";
+import { test } from "../../fixtures/test.context.ts";
+import { Menu } from "../../type/menu.type.ts";
 import { faker } from "@faker-js/faker";
-import { randomInRange } from "../utils/random.ts";
+import { randomInRange } from "../../utils/random.ts";
 
 test.describe("Post Review Test Cases", () => {
   test(

@@ -1,8 +1,8 @@
-import { test } from "../fixtures/test.context.ts";
-import { LoginPage } from "../page/login.ts";
-import { Department } from "../type/deparments.type.ts";
-import { Menu } from "../type/menu.type.ts";
-import { Payment } from "../type/payment.type.ts";
+import { test } from "../../fixtures/test.context.ts";
+import { LoginPage } from "../../page/ta/login.ts";
+import { Department } from "../../type/deparments.type.ts";
+import { Menu } from "../../type/menu.type.ts";
+import { Payment } from "../../type/payment.type.ts";
 
 test.describe("E-commerce Test Cases", () => {
   test(

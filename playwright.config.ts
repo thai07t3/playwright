@@ -16,13 +16,13 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 1,
   reporter: 'html',
   use: {
-    baseURL: 'https://demo.testarchitect.com/',
+    baseURL: 'https://practice.automationtesting.in/',
     trace: 'on-first-retry',
     screenshot: {
       mode: 'only-on-failure',
       fullPage: true,
     },
-    headless: true,
+    headless: false,
     testIdAttribute: 'id',
     actionTimeout: 10_000,
   },

@@ -1,5 +1,5 @@
-import { test } from "../fixtures/test.context.ts";
-import { Menu } from "../type/menu.type.ts";
+import { test } from "../../fixtures/test.context.ts";
+import { Menu } from "../../type/menu.type.ts";
 
 test.describe("Cart Quantity Management", () => {
   test(

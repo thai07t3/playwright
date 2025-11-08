@@ -1,10 +1,10 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { Product } from "../models/product.ts";
+import { Product } from "../../models/product.ts";
 import { HomePage } from "./home.ts";
-import { random } from "../utils/random.ts";
-import { GRID_SIZE, LIST_SIZE } from "../utils/helper.ts";
-import { SortManager } from "../services/sort.manager.ts";
-import { SortType } from "../type/sort.type.ts";
+import { random } from "../../utils/random.ts";
+import { GRID_SIZE, LIST_SIZE } from "../../utils/helper.ts";
+import { SortManager } from "../../services/sort.manager.ts";
+import { SortType } from "../../type/sort.type.ts";
 
 export class ShopPage extends HomePage {
   readonly gridViewLink: Locator;

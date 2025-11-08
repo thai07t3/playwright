@@ -1,25 +1,27 @@
-import type { Locator, Page } from "@playwright/test";
-import { HomePage } from "./home.ts";
-import { Order } from "../models/order.ts";
-import { OrderHistoryTable } from "../table/order.history.table.ts";
+import { expect, type Locator, type Page } from "@playwright/test";
+import { BasePage } from "./base.ts";
+import { Menu } from "../type/menu.type.ts";
 
-export class AccountPage extends HomePage {
-  readonly ordersLink: Locator;
-  readonly orderHistoryTable: OrderHistoryTable;
+export class AccountPage extends BasePage   {
+    readonly logoutLink: Locator;
 
-  constructor(page: Page) {
-    super(page);
-    this.ordersLink = this.page
-      .getByRole("navigation")
-      .getByRole("link", { name: "Orders" });
-    this.orderHistoryTable = new OrderHistoryTable(page);
-  }
+    constructor(page: Page) {
+        super(page);
+        this.logoutLink = this.page.getByRole('link', { name: 'Logout' });
+    }
 
-  async navigateToOrders() {
-    await this.ordersLink.click();
-  }
+    async shouldMyAccountPageDisplay(username: string) {
+        await expect(this.page).toHaveURL(/.*my-account/);
+        await this.shouldBeOnPage(Menu.MY_ACCOUNT);
+        await expect(this.page.getByText(`Hello ${username} (not ${username}? Sign out)`)).toBeVisible();
+        await this.shouldLogoutLinkBeVisible();
+    }
 
-  async shouldHaveSpecificOrdersInHistory(expectedOrders: Order[]) {
-    await this.orderHistoryTable.shouldContainOrders(expectedOrders);
-  }
+    async shouldLogoutLinkBeVisible() {
+        await expect(this.logoutLink).toBeVisible();
+    }
+
+    async logout() {
+        await this.logoutLink.click();
+    }
 }

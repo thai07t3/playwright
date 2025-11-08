@@ -1,17 +1,17 @@
 import { test as base } from "@playwright/test";
-import { HomePage } from "../page/home.ts";
-import { LoginPage } from "../page/login.ts";
-import { ShopPage } from "../page/shop.ts";
-import { CartPage } from "../page/cart.ts";
-import { CheckoutPage } from "../page/checkout.ts";
+import { HomePage } from "../page/ta/home.ts";
+import { LoginPage } from "../page/ta/login.ts";
+import { ShopPage } from "../page/ta/shop.ts";
+import { CartPage } from "../page/ta/cart.ts";
+import { CheckoutPage } from "../page/ta/checkout.ts";
 import {
   CustomerRepository,
   CustomerInfo,
   getUser,
   type User,
 } from "../models/customer.info.ts";
-import { AccountPage } from "../page/account.ts";
-import { ProductDetailPage } from "../page/product.detail.ts";
+import { AccountPage } from "../page/ta/account.ts";
+import { ProductDetailPage } from "../page/ta/product.detail.ts";
 
 type Pages = {
   homePage: HomePage;

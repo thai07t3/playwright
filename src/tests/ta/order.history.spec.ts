@@ -1,11 +1,11 @@
-import { test as test } from "../fixtures/test.context.ts";
-import { Menu } from "../type/menu.type.ts";
-import type { Order } from "../models/order.ts";
-import { HomePage } from "../page/home.ts";
-import { LoginPage } from "../page/login.ts";
-import { ShopPage } from "../page/shop.ts";
-import { CartPage } from "../page/cart.ts";
-import { CheckoutPage } from "../page/checkout.ts";
+import { test as test } from "../../fixtures/test.context.ts";
+import { Menu } from "../../type/menu.type.ts";
+import type { Order } from "../../models/order.ts";
+import { HomePage } from "../../page/ta/home.ts";
+import { LoginPage } from "../../page/ta/login.ts";
+import { ShopPage } from "../../page/ta/shop.ts";
+import { CartPage } from "../../page/ta/cart.ts";
+import { CheckoutPage } from "../../page/ta/checkout.ts";
 
 test.describe("Order History Verification", () => {
   const placedOrders: Order[] = [];
