@@ -5,30 +5,26 @@ export interface CustomerData {
   firstName: string;
   lastName: string;
   companyName?: string;
+  email: string;
+  phone: string;
   country: string;
-  streetAddress: string;
-  apartment: string;
-  postcode: string;
+  address: string;
   city: string;
   state: string;
-  phone: string;
-  email: string;
-  orderNotes?: string;
+  zip: string;
 }
 
 export class CustomerInfo {
   public firstName: string;
   public lastName: string;
   public companyName?: string;
+  public email: string;
+  public phone: string;
   public country: string;
-  public streetAddress: string;
-  public apartment: string;
-  public postcode: string;
+  public address: string;
   public city: string;
   public state: string;
-  public phone: string;
-  public email: string;
-  public orderNotes?: string;
+  public zip: string;
 
   constructor(data: CustomerData) {
     this.firstName = data.firstName;
@@ -36,17 +32,13 @@ export class CustomerInfo {
     if (data.companyName) {
       this.companyName = data.companyName;
     }
+    this.email = data.email;
+    this.phone = data.phone;
     this.country = data.country;
-    this.streetAddress = data.streetAddress;
-    this.apartment = data.apartment;
-    this.postcode = data.postcode;
+    this.address = data.address;
     this.city = data.city;
     this.state = data.state;
-    this.phone = data.phone;
-    this.email = data.email;
-    if (data.orderNotes) {
-      this.orderNotes = data.orderNotes;
-    }
+    this.zip = data.zip;
   }
 
   toObject(): CustomerData {
