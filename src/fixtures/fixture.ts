@@ -2,7 +2,7 @@ import { test as base } from "@playwright/test";
 import { HomePage } from "../page/home.ts";
 import { AccountPage } from "../page/account.ts";
 import { RegisterPage } from "../page/register.ts";
-import { CustomerInfo, CustomerRepository } from "../models/customer.info.ts";
+import { CustomerInfo } from "../models/customer.info.ts";
 
 type Pages = {
   homePage: HomePage;
@@ -26,5 +26,8 @@ export const test = base.extend<Pages>({
     await use(new AccountPage(page));
   },
 
-  customerInfo: CustomerRepository.loadCustomer(),
+  customerInfo: async ({}, use) => {
+    const customerInfo = await CustomerInfo.create();
+    await use(customerInfo);
+  },
 });
