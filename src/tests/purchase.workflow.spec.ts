@@ -10,9 +10,9 @@ test.describe("E-commerce Test Cases", () => {
     {
       tag: ["@smoke", "@regression"],
     },
-    async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
+    async ({ accountPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 2-7: Navigate to product category and verify views
-      await loginPage.selectDepartment(
+      await accountPage.selectDepartment(
         Department.ELECTRONIC_COMPONENTS_SUPPLIES,
       );
       await shopPage.shouldBeInGridView();
@@ -48,9 +48,9 @@ test.describe("E-commerce Test Cases", () => {
     {
       tag: ["@regression"],
     },
-    async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
+    async ({ accountPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
       // 3-4: Select multiple items and add to cart
-      await loginPage.navigateTo(Menu.SHOP);
+      await accountPage.navigateTo(Menu.SHOP);
       const selectedProducts = await shopPage.addMultipleItemsToCart();
       await shopPage.goToCart();
       await cartPage.shouldCartContain(selectedProducts);
@@ -70,9 +70,15 @@ test.describe("E-commerce Test Cases", () => {
       {
         tag: ["@regression"],
       },
-      async ({ loginPage, shopPage, cartPage, checkoutPage, customerInfo }) => {
+      async ({
+        accountPage,
+        shopPage,
+        cartPage,
+        checkoutPage,
+        customerInfo,
+      }) => {
         // 3-4: Navigate to shop and add random item to cart
-        await loginPage.navigateTo(Menu.SHOP);
+        await accountPage.navigateTo(Menu.SHOP);
         await shopPage.addRandomItemToCart();
 
         // 5-8: Go to cart and proceed to checkout
@@ -111,6 +117,45 @@ test.describe("E-commerce Test Cases", () => {
       await checkoutPage.fillBillingInformation(customerInfo);
       await checkoutPage.placeOrder();
       await checkoutPage.shouldShowOrderConfirmation();
+    },
+  );
+
+  test(
+    "TC07: Ensure Proper Error Handling When Mandatory Fields Are Blank",
+    {
+      tag: ["@regression"],
+    },
+    async ({ accountPage, shopPage, cartPage, checkoutPage }) => {
+      // Pre-condition: User is at checkout
+      // Navigate to shop and add item to cart
+      await accountPage.navigateTo(Menu.SHOP);
+      await shopPage.addRandomItemToCart();
+      await shopPage.goToCart();
+      await cartPage.checkout();
+      await checkoutPage.shouldCheckoutPageDisplay();
+
+      // Clear any pre-filled fields to ensure they are truly blank
+      await checkoutPage.clearBillingInformation();
+
+      await checkoutPage.placeOrder();
+
+      await checkoutPage.shouldShowAlert();
+      await checkoutPage.shouldHighlightMandatoryFields();
+    },
+  );
+
+  test(
+    "TC08: Users Can Clear The Cart Successfully",
+    {
+      tag: ["@regression"],
+    },
+    async ({ accountPage, shopPage, cartPage }) => {
+      await accountPage.navigateTo(Menu.SHOP);
+      const selectedProduct = await shopPage.addRandomItemToCart();
+      await shopPage.goToCart();
+      await cartPage.shouldCartContain([selectedProduct]);
+      await cartPage.clearShoppingCart();
+      await cartPage.shouldShowEmptyCartMessage();
     },
   );
 });

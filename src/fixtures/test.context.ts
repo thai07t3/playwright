@@ -10,10 +10,12 @@ import {
   getUser,
   type User,
 } from "../models/customer.info.ts";
+import { AccountPage } from "../page/account.ts";
 
 type Pages = {
   homePage: HomePage;
   loginPage: LoginPage;
+  accountPage: AccountPage;
   shopPage: ShopPage;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
@@ -26,13 +28,18 @@ export const test = base.extend<Pages>({
     await use(new HomePage(page));
   },
 
-  loginPage: async ({ page, homePage, user }, use) => {
+  loginPage: async ({ page, homePage }, use) => {
     const loginPage = new LoginPage(page);
     await page.goto(process.env.URL || "/");
     await homePage.closePopupIfPresent();
     await homePage.goToLogin();
-    await loginPage.login(user);
     await use(loginPage);
+  },
+
+  accountPage: async ({ page, loginPage, user }, use) => {
+    const accountPage = new AccountPage(page);
+    await loginPage.login(user);
+    await use(accountPage);
   },
 
   shopPage: async ({ page }, use) => {

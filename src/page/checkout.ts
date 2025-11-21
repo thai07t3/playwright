@@ -3,6 +3,8 @@ import { HomePage } from "./home.ts";
 import { CustomerInfo } from "../models/customer.info.ts";
 import { CheckoutTable } from "../table/checkout.table.ts";
 import type { Product } from "../models/product.ts";
+import { Order } from "../models/order.ts";
+import { checkoutValidationErrors } from "../data/validation-errors.ts";
 
 export class CheckoutPage extends HomePage {
   readonly billingLabel: Locator;
@@ -22,11 +24,20 @@ export class CheckoutPage extends HomePage {
   readonly phoneField: Locator;
   readonly emailField: Locator;
   readonly orderNotesField: Locator;
+  readonly alertLabel: Locator;
 
   // Action buttons
   readonly placeOrderButton: Locator;
   readonly orderConfirmationMessage: Locator;
   readonly blockUI: Locator;
+
+  //Order Info
+  readonly orderInfo: Locator;
+  readonly orderNumber: Locator;
+  readonly orderDate: Locator;
+  readonly orderEmail: Locator;
+  readonly orderTotal: Locator;
+  readonly orderPaymentMethod: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -49,6 +60,7 @@ export class CheckoutPage extends HomePage {
     this.phoneField = this.page.getByTestId("billing_phone");
     this.emailField = this.page.getByTestId("billing_email");
     this.orderNotesField = this.page.getByTestId("order_comments");
+    this.alertLabel = this.page.getByRole("alert");
 
     this.placeOrderButton = this.page.getByRole("button", {
       name: /place order|complete order/i,
@@ -57,6 +69,13 @@ export class CheckoutPage extends HomePage {
       "Thank you. Your order has been received",
     );
     this.blockUI = this.page.locator(".blockOverlay").last();
+    //Order Info
+    this.orderInfo = this.page.getByRole("list");
+    this.orderNumber = this.orderInfo.getByText("Order number:");
+    this.orderDate = this.orderInfo.getByText("Date:");
+    this.orderEmail = this.orderInfo.getByText("Email:");
+    this.orderTotal = this.orderInfo.getByText("Total:");
+    this.orderPaymentMethod = this.orderInfo.getByText("Payment method:");
   }
 
   async shouldCheckoutPageDisplay() {
@@ -107,6 +126,16 @@ export class CheckoutPage extends HomePage {
     }
   }
 
+  async clearBillingInformation() {
+    await this.firstNameField.clear();
+    await this.lastNameField.clear();
+    await this.addressField.clear();
+    await this.postcodeField.clear();
+    await this.cityField.clear();
+    await this.phoneField.clear();
+    await this.emailField.clear();
+  }
+
   async shouldProductInCheckout(productName: string, productPrice: string) {
     await this.checkoutTable.shouldProductInCheckout(productName, productPrice);
   }
@@ -131,6 +160,49 @@ export class CheckoutPage extends HomePage {
 
   async shouldShowOrderConfirmation() {
     await this.blockUI.waitFor({ state: "detached", timeout: 10000 });
-    await expect(this.orderConfirmationMessage).toBeVisible();
+    await expect(this.orderConfirmationMessage).toBeVisible({ timeout: 10000 });
+  }
+
+  async shouldShowAlert() {
+    await expect(this.alertLabel).toBeVisible();
+    const expectedErrors = checkoutValidationErrors;
+    for (const error of expectedErrors) {
+      await expect(this.alertLabel).toContainText(error);
+    }
+  }
+
+  async shouldHighlightMandatoryFields() {
+    const mandatoryFields = [
+      this.firstNameField,
+      this.lastNameField,
+      this.addressField,
+      this.cityField,
+      this.postcodeField,
+      this.phoneField,
+      this.emailField,
+    ];
+
+    for (const field of mandatoryFields) {
+      await expect(field).toHaveCSS(
+        "border-color",
+        /rgb\(198,\s*40,\s*40\)|rgb\(198, 40, 40\)/,
+      );
+    }
+  }
+
+  async getOrderInformation(): Promise<Order> {
+    const orderNumberText = await this.orderNumber.textContent();
+    const dateText = await this.orderDate.textContent();
+    const emailText = await this.orderEmail.textContent();
+    const totalText = await this.orderTotal.textContent();
+    const paymentMethodText = await this.orderPaymentMethod.textContent();
+
+    return Order.fromOrderOverview(
+      orderNumberText || "",
+      dateText || "",
+      emailText || "",
+      totalText || "",
+      paymentMethodText || "",
+    );
   }
 }

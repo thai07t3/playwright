@@ -11,7 +11,7 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.popupTitle = this.page.getByText("Our Spring Sale Has Started");
+    this.popupTitle = this.page.getByTestId("pum-5700");
     this.closePopupButton = this.page.getByRole("button", { name: "Close" });
     this.loginLink = this.page.getByRole("link", { name: "Log in / Sign up" });
     this.allDepartmentsLabel = this.page.getByText("All Departments");

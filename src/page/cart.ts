@@ -8,6 +8,8 @@ export class CartPage extends HomePage {
   readonly cartTable: CartTable;
   readonly totalPrice: Locator;
   readonly checkoutButton: Locator;
+  readonly clearCartButton: Locator;
+  readonly emptyCartMessage: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -19,6 +21,10 @@ export class CartPage extends HomePage {
       .last();
     this.checkoutButton = this.page.getByRole("link", {
       name: "Proceed to checkout",
+    });
+    this.clearCartButton = this.page.getByText("Clear shopping cart");
+    this.emptyCartMessage = this.page.getByRole("heading", {
+      name: "YOUR SHOPPING CART IS EMPTY",
     });
   }
 
@@ -70,5 +76,17 @@ export class CartPage extends HomePage {
   async proceedToCheckout() {
     await this.checkoutButton.click();
     await this.page.waitForLoadState("domcontentloaded");
+  }
+
+  async clearShoppingCart() {
+    // Handle confirmation dialog (can be skipped due to auto-accept in Playwright config)
+    this.page.on("dialog", async (dialog) => {
+      await dialog.accept();
+    });
+    await this.clearCartButton.click();
+  }
+
+  async shouldShowEmptyCartMessage() {
+    await expect(this.emptyCartMessage).toBeVisible();
   }
 }

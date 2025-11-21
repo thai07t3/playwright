@@ -8,9 +8,9 @@ test.describe("E-commerce Test Cases", () => {
     {
       tag: ["@smoke", "@regression"],
     },
-    async ({ loginPage, shopPage }) => {
+    async ({ accountPage, shopPage }) => {
       // 3. Go to Shop page
-      await loginPage.navigateTo(Menu.SHOP);
+      await accountPage.navigateTo(Menu.SHOP);
 
       // 4. Switch view to list
       await shopPage.switchViewTo("list");
