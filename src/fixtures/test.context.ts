@@ -11,6 +11,7 @@ import {
   type User,
 } from "../models/customer.info.ts";
 import { AccountPage } from "../page/account.ts";
+import { ProductDetailPage } from "../page/product.detail.ts";
 
 type Pages = {
   homePage: HomePage;
@@ -21,6 +22,7 @@ type Pages = {
   checkoutPage: CheckoutPage;
   user: User;
   customerInfo: CustomerInfo;
+  productDetails: ProductDetailPage;
 };
 
 export const test = base.extend<Pages>({
@@ -59,4 +61,8 @@ export const test = base.extend<Pages>({
   user: getUser(),
 
   customerInfo: CustomerRepository.loadCustomer(),
+
+  productDetails: async ({ page }, use) => {
+    await use(new ProductDetailPage(page));
+  },
 });
