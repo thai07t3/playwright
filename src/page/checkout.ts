@@ -29,7 +29,6 @@ export class CheckoutPage extends HomePage {
   // Action buttons
   readonly placeOrderButton: Locator;
   readonly orderConfirmationMessage: Locator;
-  readonly blockUI: Locator;
 
   //Order Info
   readonly orderInfo: Locator;
@@ -61,14 +60,13 @@ export class CheckoutPage extends HomePage {
     this.emailField = this.page.getByTestId("billing_email");
     this.orderNotesField = this.page.getByTestId("order_comments");
     this.alertLabel = this.page.getByRole("alert");
-
     this.placeOrderButton = this.page.getByRole("button", {
       name: /place order|complete order/i,
     });
     this.orderConfirmationMessage = this.page.getByText(
       "Thank you. Your order has been received",
     );
-    this.blockUI = this.page.locator(".blockOverlay").last();
+
     //Order Info
     this.orderInfo = this.page.getByRole("list");
     this.orderNumber = this.orderInfo.getByText("Order number:");
@@ -159,7 +157,7 @@ export class CheckoutPage extends HomePage {
   }
 
   async shouldShowOrderConfirmation() {
-    await this.blockUI.waitFor({ state: "detached", timeout: 10000 });
+    await this.waitForBlockUIToDisappear();
     await expect(this.orderConfirmationMessage).toBeVisible({ timeout: 10000 });
   }
 
